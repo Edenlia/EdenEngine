@@ -42,7 +42,7 @@ void display() {
     t2->setColor(2, {255, 0, 0});
 
     obj->addTriangle(t1);
-//    obj->addTriangle(t2);
+    obj->addTriangle(t2);
     scene->addObject(obj);
 
     vec3 eye(0, 0, -5);

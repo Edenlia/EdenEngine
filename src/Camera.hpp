@@ -18,6 +18,8 @@ namespace EE {
 
         [[nodiscard]] glm::mat4 getViewMatrix() const { return glm::lookAtLH(position, lookAt, up); };
         [[nodiscard]] glm::mat4 getProjectionMatrix() const { return glm::perspectiveLH(fov, aspect, zNear, zFar); };
+        [[nodiscard]] float getNearPlane() const { return zNear; };
+        [[nodiscard]] float getFarPlane() const { return zFar; };
 
     private:
         glm::vec3 position;

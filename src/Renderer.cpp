@@ -77,7 +77,7 @@ namespace EE {
                     auto[alpha, beta, gamma] = computeBarycentric2D(p.x, p.x, v0, v1, v2);
                     // interpolate z buffer: https://zhuanlan.zhihu.com/p/144331875
                     float z = 1 / (alpha / v0.z + beta / v1.z + gamma / v2.z);
-                    if (z < depthBuffer[y + x * scene->getWidth()]) {
+                    if (z < depthBuffer[y + x * scene->getWidth()] && z <= this->camera->getFarPlane() && z >= this->camera->getNearPlane()) {
 //                        std::cout << "update!" << std::endl;
                         depthBuffer[y + x * scene->getWidth()] = z;
                         frameBuffer[y + x * scene->getWidth()] = z * (alpha * c0 / v0.z + beta * c1 / v1.z + gamma * c2 / v2.z);
