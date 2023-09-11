@@ -17,7 +17,7 @@ namespace EE {
         : position(position), lookAt(lookAt), up(up), fov(fov), aspect(aspect), zNear(zNear), zFar(zFar) {};
 
         [[nodiscard]] glm::mat4 getViewMatrix() const { return glm::lookAtLH(position, lookAt, up); };
-        [[nodiscard]] glm::mat4 getProjectionMatrix() const { return glm::perspectiveLH(fov, aspect, zNear, zFar); };
+        [[nodiscard]] glm::mat4 getProjectionMatrix() const { return glm::perspectiveLH(glm::radians(fov), aspect, zNear, zFar); };
         [[nodiscard]] float getNearPlane() const { return zNear; };
         [[nodiscard]] float getFarPlane() const { return zFar; };
         [[nodiscard]] int getWidth() const { return width; };

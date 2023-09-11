@@ -7,7 +7,7 @@
 
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
-#include "Object.hpp"
+#include "Actor.hpp"
 #include <vector>
 
 namespace EE {
@@ -15,11 +15,11 @@ namespace EE {
     class Scene {
     public:
         Scene(){};
-        void addObject(EE::Object* newObject) { objects.push_back(newObject); };
-        [[nodiscard]] std::vector<EE::Object*> getObjects() const { return objects; };
+        void addActor(EE::Actor* newActor) { actors.push_back(newActor); };
+        [[nodiscard]] std::vector<EE::Actor*> getActors() const { return actors; };
 
     private:
-        std::vector<EE::Object*> objects;
+        std::vector<EE::Actor*> actors;
     };
 
 } // EE

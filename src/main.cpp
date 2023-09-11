@@ -1,15 +1,11 @@
 #include <iostream>
 #include <GL/glew.h>
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
 #include <GL/glut.h>
 #include "Scene.hpp"
-#include "Object.hpp"
 #include "Camera.hpp"
 #include "Renderer.hpp"
+#include "util/ModelReader.hpp"
 #include <assimp/Importer.hpp>
-#include <assimp/scene.h>
-#include <assimp/postprocess.h>
 
 using namespace glm;
 using namespace EE;
@@ -27,71 +23,29 @@ void setPixel(int x, int y, float r, float g, float b) {
 void display() {
     auto* scene = new Scene();
 
-    Assimp::Importer importer;
+    auto* modelReader = new ModelReader();
+    modelReader->readModel("../models/bunny/bunny.obj", "bunny");
+    auto *atr1 = new Actor(modelReader->getModel("bunny"),
+                           glm::vec3 (1, -0.05, 0),
+                           glm::vec3(0, 0, 0),
+                           glm::vec3(7, 7, 7));
+    auto *atr2 = new Actor(modelReader->getModel("bunny"),
+                           glm::vec3 (0, -0.02, 0),
+                           glm::vec3(0, 0, 0),
+                           glm::vec3(5, 5, 5));
+    auto *atr3 = new Actor(modelReader->getModel("bunny"),
+                           glm::vec3 (-1, 0, 0),
+                           glm::vec3(0, 0, 0),
+                           glm::vec3(3, 3, 3));
 
-    const aiScene *as = importer.ReadFile("../models/bunny/bunny.obj",
-                                          aiProcess_Triangulate |
-                                          aiProcess_JoinIdenticalVertices |
-                                          aiProcess_GenSmoothNormals
-    );
+    scene->addActor(atr1);
+    scene->addActor(atr2);
+    scene->addActor(atr3);
 
-    if (!as || as->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !as->mRootNode) {
-        std::cerr << "ERROR::ASSIMP::" << importer.GetErrorString() << std::endl;
-        exit(-1);
-    }
-
-    for (int i = 0; i < as->mNumMeshes; i++) {
-        aiMesh *mesh = as->mMeshes[i];
-        assert(mesh->HasNormals());
-        auto* obj = new Object();
-        for (int j = 0; j < mesh->mNumFaces; j++) {
-            aiFace face = mesh->mFaces[j];
-            auto *triangle = new Triangle();
-            assert(face.mNumIndices == 3);
-            for (int k = 0; k < face.mNumIndices; k++) {
-                int index = face.mIndices[k];
-                aiVector3D vertex = mesh->mVertices[index];
-                aiColor4D color;
-                if (!mesh->HasVertexColors(0)) {
-                    color = aiColor4D(1.0f, 0.0f, 0.0f, 1.0f);
-                } else {
-                    color = mesh->mColors[0][index];
-                }
-                aiVector3D normal = mesh->mNormals[index];
-//                std::cout << "normal: " << normal.x << " " << normal.y << " " << normal.z << std::endl;
-
-                triangle->setVertex(k, vec3(vertex.x, vertex.y, vertex.z));
-                triangle->setColor(k, vec3(color.r, color.g, color.b));
-                triangle->setNormal(k, vec3(normal.x, normal.y, normal.z));
-            }
-            obj->addTriangle(triangle);
-        }
-        scene->addObject(obj);
-    }
-
-//    auto *t1 = new Triangle();
-//    t1->setVertex(0, vec3(2, 0, 3));
-//    t1->setVertex(1, vec3(0, 2, 3));
-//    t1->setVertex(2, vec3(-2, 0, 3));
-//    t1->setColor(0, {1, 0, 0});
-//    t1->setColor(1, {0, 1, 0});
-//    t1->setColor(2, {0, 0, 1});
-//
-//    auto *t2 = new Triangle();
-//    t2->setVertex(0, vec3(3.5, -1, 5));
-//    t2->setVertex(1, vec3(2.5, 1.5, 5));
-//    t2->setVertex(2, vec3(-1, 0.5, 1));
-//    t2->setColor(0, {1, 0, 0});
-//    t2->setColor(1, {1, 0, 0});
-//    t2->setColor(2, {1, 0, 0});
-
-//    obj->addTriangle(t1);
-//    obj->addTriangle(t2);
-
-    vec3 eye(0, .3, .5);
+    vec3 eye(0, .9, 1.2);
     vec3 lookAt(0, 0, -1);
     vec3 up(0, 1, 0);
-    float fov = 45.0f;
+    float fov = 90.0f;
     float aspect = (float) WINDOW_WIDTH / (float) WINDOW_HEIGHT;
     float zNear = 0.1f;
     float zFar = 50.0f;

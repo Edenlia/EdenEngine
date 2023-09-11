@@ -20,18 +20,18 @@ namespace EE {
     }
 
     void Renderer::draw() {
-        for (auto &object : scene->getObjects()) {
-            for (auto &triangle : object->getTriangles()) {
+        for (auto &actor : scene->getActors()) {
+            for (auto &triangle : actor->getModel()->getTriangles()) {
                 auto* screenTriangle = new Triangle();
                 for (int i = 0; i < 3; i++) {
-                    glm::vec4 vertex = viewMatrix * glm::vec4(triangle->getVertex(i), 1.0f);
-//                    std::cout << "view vertex: " << vertex.x << " " << vertex.y << " " << vertex.z << std::endl;
+                    // model, view transform
+                    glm::vec4 vertex = actor->getModelMatrix() * glm::vec4(triangle->getVertex(i), 1.0f);
+                    vertex = viewMatrix * vertex;
                     vertex /= vertex.w;
                     float bufferZ = vertex.z; // Depth of z, we store the view depth because that is linear
-
+                    // projection transform
                     vertex = projectionMatrix * vertex;
                     vertex /= vertex.w;
-//                    std::cout << "projection vertex: " << vertex.x << " " << vertex.y << " " << vertex.z << std::endl;
                     vertex.x = (vertex.x + 1.0f) * (float) camera->getWidth() / 2.0f; // NDC to screen, [-1,1] to [0, width]
                     vertex.y = (vertex.y + 1.0f) * (float) camera->getHeight() / 2.0f; // NDC to screen, [-1,1] to [0, height]
                     vertex.z = bufferZ; // z store the depth of the vertex in view coordinate, it is linear, near plane to far plane
@@ -39,11 +39,6 @@ namespace EE {
                     screenTriangle->setColor(i, triangle->getColor(i));
                     screenTriangle->setNormal(i, triangle->getNormal(i));
                 }
-
-//                std::cout << "screenTriangle v0: " << "v0: " << screenTriangle->getVertex(0).x << " " << screenTriangle->getVertex(0).y << " " << screenTriangle->getVertex(0).z << std::endl;
-//                std::cout << "screenTriangle v1: " << "v1: " << screenTriangle->getVertex(1).x << " " << screenTriangle->getVertex(1).y << " " << screenTriangle->getVertex(1).z << std::endl;
-//                std::cout << "screenTriangle v2: " << "v2: " << screenTriangle->getVertex(2).x << " " << screenTriangle->getVertex(2).y << " " << screenTriangle->getVertex(2).z << std::endl;
-
                 drawTriangle(screenTriangle);
             }
         }
@@ -77,7 +72,6 @@ namespace EE {
                 glm::vec3 p((float) x + 0.5f, (float) y + 0.5f, 0.0f);
                 if (insideTriangle(p, v0, v1, v2)) {
                     auto[alpha, beta, gamma] = computeBarycentric2D(p.x, p.y, v0, v1, v2);
-//                    std::cout << "alpha: " << alpha << " beta: " << beta << " gamma: " << gamma << std::endl;
                     // interpolate z buffer: https://zhuanlan.zhihu.com/p/144331875
                     float z = 1 / (alpha / v0.z + beta / v1.z + gamma / v2.z);
                     if (z < depthBuffer[getIndex(x,y)] && z <= this->camera->getFarPlane() && z >= this->camera->getNearPlane()) {

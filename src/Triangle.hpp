@@ -17,6 +17,9 @@ namespace EE {
         glm::vec3 vertices[3]{};
         glm::vec3 normal[3]{};
         glm::vec3 color[3]{};
+        glm::vec2 uv[3]{};
+
+
 
         void setColor(int i, glm::vec3 clr) { this->color[i] = clr; };
         void setNormal(int i, glm::vec3 n) { this->normal[i] = n; };
@@ -29,8 +32,6 @@ namespace EE {
         [[nodiscard]] glm::vec3 getColor() const { return color[0]; };
 
         [[nodiscard]] std::array<glm::vec4, 3> ToVector4();
-    private:
-
     };
 
 } // EE

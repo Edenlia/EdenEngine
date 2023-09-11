@@ -36,9 +36,7 @@ foreach(_source_file IN ITEMS ${SOURCE_FILE})
     source_group("${_group_path}" FILES "${_source_file}")
 endforeach()
 
-add_executable(EdenEngine ${SOURCE_FILE}
-        src/util/ModelReader.cpp
-        src/util/ModelReader.hpp)
+add_executable(EdenEngine ${SOURCE_FILE})
 
 find_package(GLEW REQUIRED)
 find_package(GLUT REQUIRED)
