@@ -36,12 +36,18 @@ foreach(_source_file IN ITEMS ${SOURCE_FILE})
     source_group("${_group_path}" FILES "${_source_file}")
 endforeach()
 
-add_executable(EdenEngine ${SOURCE_FILE})
+add_executable(EdenEngine ${SOURCE_FILE}
+        src/util/ModelReader.cpp
+        src/util/ModelReader.hpp)
 
 find_package(GLEW REQUIRED)
 find_package(GLUT REQUIRED)
+find_package(assimp REQUIRED)
 find_package(glm CONFIG REQUIRED)
+
 
 target_link_libraries(EdenEngine PRIVATE GLUT::GLUT)
 target_link_libraries(EdenEngine PRIVATE GLEW::GLEW)
+target_link_libraries(EdenEngine PRIVATE assimp::assimp)
 target_link_libraries(EdenEngine PRIVATE glm::glm)
+

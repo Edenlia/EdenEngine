@@ -37,6 +37,7 @@ namespace EE {
                     vertex.z = bufferZ; // z store the depth of the vertex in view coordinate, it is linear, near plane to far plane
                     screenTriangle->setVertex(i, glm::vec3(vertex.x, vertex.y, vertex.z));
                     screenTriangle->setColor(i, triangle->getColor(i));
+                    screenTriangle->setNormal(i, triangle->getNormal(i));
                 }
 
 //                std::cout << "screenTriangle v0: " << "v0: " << screenTriangle->getVertex(0).x << " " << screenTriangle->getVertex(0).y << " " << screenTriangle->getVertex(0).z << std::endl;
@@ -48,6 +49,7 @@ namespace EE {
         }
     }
 
+    // draw triangle, the param triangle's z value is view coordinate's z value
     void Renderer::drawTriangle(Triangle* triangle) {
         glm::vec3 v0 = triangle->getVertex(0);
         glm::vec3 v1 = triangle->getVertex(1);
@@ -80,7 +82,8 @@ namespace EE {
                     float z = 1 / (alpha / v0.z + beta / v1.z + gamma / v2.z);
                     if (z < depthBuffer[getIndex(x,y)] && z <= this->camera->getFarPlane() && z >= this->camera->getNearPlane()) {
                         depthBuffer[getIndex(x,y)] = z;
-                        frameBuffer[getIndex(x,y)] = z * (alpha * c0 / v0.z + beta * c1 / v1.z + gamma * c2 / v2.z);
+//                        frameBuffer[getIndex(x,y)] = z * (alpha * c0 / v0.z + beta * c1 / v1.z + gamma * c2 / v2.z);
+                        frameBuffer[getIndex(x,y)] = renderPixel(x, y, z, alpha, beta, gamma, triangle);
                     }
                 }
             }
@@ -103,5 +106,34 @@ namespace EE {
         return (c1 >= 0 && c2 >= 0 && c3 >= 0) || (c1 <= 0 && c2 <= 0 && c3 <= 0);
     }
 
-
+    glm::vec3 Renderer::renderPixel(int x, int y, float z_value, float alpha, float beta, float gamma, const Triangle *triangle) {
+        glm::vec3 color;
+        switch (renderMode) {
+            case RenderMode::RASTERIZATION:
+                color = z_value * (alpha * triangle->getColor(0) / triangle->getVertex(0).z +
+                                  beta * triangle->getColor(1) / triangle->getVertex(1).z +
+                                  gamma * triangle->getColor(2) / triangle->getVertex(2).z);
+                break;
+            case NORMAL:
+//                std::cout << "v0's normal: " << triangle->getNormal(0).x << " " << triangle->getNormal(0).y << " " << triangle->getNormal(0).z << std::endl;
+//                std::cout << "v1's normal: " << triangle->getNormal(1).x << " " << triangle->getNormal(1).y << " " << triangle->getNormal(1).z << std::endl;
+//                std::cout << "v2's normal: " << triangle->getNormal(2).x << " " << triangle->getNormal(2).y << " " << triangle->getNormal(2).z << std::endl;
+                glm::vec3 normal = z_value * (alpha * triangle->getNormal(0) / triangle->getVertex(0).z +
+                                              beta * triangle->getNormal(1) / triangle->getVertex(1).z +
+                                              gamma * triangle->getNormal(2) / triangle->getVertex(2).z);
+//                std::cout << "normal: " << normal.x << " " << normal.y << " " << normal.z << std::endl;
+                color = (normal + glm::vec3(1, 1, 1)) / 2.f;
+                break;
+            case WIREFRAME:
+                break;
+            case VERTEX:
+                break;
+            case DEPTH:
+                break;
+            case TEXTURE:
+                break;
+        }
+//        std::cout << "color: " << color.x << " " << color.y << " " << color.z << std::endl;
+        return color;
+    }
 } // EE

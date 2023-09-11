@@ -7,6 +7,9 @@
 #include "Object.hpp"
 #include "Camera.hpp"
 #include "Renderer.hpp"
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
 
 using namespace glm;
 using namespace EE;
@@ -23,30 +26,70 @@ void setPixel(int x, int y, float r, float g, float b) {
 
 void display() {
     auto* scene = new Scene(WINDOW_WIDTH, WINDOW_HEIGHT);
-    auto* obj = new Object();
 
-    auto *t1 = new Triangle();
-    t1->setVertex(0, vec3(2, 0, 3));
-    t1->setVertex(1, vec3(0, 2, 3));
-    t1->setVertex(2, vec3(-2, 0, 3));
-    t1->setColor(0, {1, 0, 0});
-    t1->setColor(1, {0, 1, 0});
-    t1->setColor(2, {0, 0, 1});
+    Assimp::Importer importer;
 
-    auto *t2 = new Triangle();
-    t2->setVertex(0, vec3(3.5, -1, 5));
-    t2->setVertex(1, vec3(2.5, 1.5, 5));
-    t2->setVertex(2, vec3(-1, 0.5, 1));
-    t2->setColor(0, {1, 0, 0});
-    t2->setColor(1, {1, 0, 0});
-    t2->setColor(2, {1, 0, 0});
+    const aiScene *as = importer.ReadFile("../models/bunny/bunny.obj",
+                                          aiProcess_Triangulate |
+                                          aiProcess_JoinIdenticalVertices |
+                                          aiProcess_GenSmoothNormals
+    );
 
-    obj->addTriangle(t1);
+    if (!as || as->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !as->mRootNode) {
+        std::cerr << "ERROR::ASSIMP::" << importer.GetErrorString() << std::endl;
+        exit(-1);
+    }
+
+    for (int i = 0; i < as->mNumMeshes; i++) {
+        aiMesh *mesh = as->mMeshes[i];
+        assert(mesh->HasNormals());
+        auto* obj = new Object();
+        for (int j = 0; j < mesh->mNumFaces; j++) {
+            aiFace face = mesh->mFaces[j];
+            auto *triangle = new Triangle();
+            assert(face.mNumIndices == 3);
+            for (int k = 0; k < face.mNumIndices; k++) {
+                int index = face.mIndices[k];
+                aiVector3D vertex = mesh->mVertices[index];
+                aiColor4D color;
+                if (!mesh->HasVertexColors(0)) {
+                    color = aiColor4D(1.0f, 0.0f, 0.0f, 1.0f);
+                } else {
+                    color = mesh->mColors[0][index];
+                }
+                aiVector3D normal = mesh->mNormals[index];
+//                std::cout << "normal: " << normal.x << " " << normal.y << " " << normal.z << std::endl;
+
+                triangle->setVertex(k, vec3(vertex.x, vertex.y, vertex.z));
+                triangle->setColor(k, vec3(color.r, color.g, color.b));
+                triangle->setNormal(k, vec3(normal.x, normal.y, normal.z));
+            }
+            obj->addTriangle(triangle);
+        }
+        scene->addObject(obj);
+    }
+
+//    auto *t1 = new Triangle();
+//    t1->setVertex(0, vec3(2, 0, 3));
+//    t1->setVertex(1, vec3(0, 2, 3));
+//    t1->setVertex(2, vec3(-2, 0, 3));
+//    t1->setColor(0, {1, 0, 0});
+//    t1->setColor(1, {0, 1, 0});
+//    t1->setColor(2, {0, 0, 1});
+//
+//    auto *t2 = new Triangle();
+//    t2->setVertex(0, vec3(3.5, -1, 5));
+//    t2->setVertex(1, vec3(2.5, 1.5, 5));
+//    t2->setVertex(2, vec3(-1, 0.5, 1));
+//    t2->setColor(0, {1, 0, 0});
+//    t2->setColor(1, {1, 0, 0});
+//    t2->setColor(2, {1, 0, 0});
+
+//    obj->addTriangle(t1);
 //    obj->addTriangle(t2);
-    scene->addObject(obj);
 
-    vec3 eye(0, 0, -5);
-    vec3 lookAt(0, 0, 1);
+    vec3 eye(0, .3, .5);
+    vec3 lookAt(0, 0, -1);
     vec3 up(0, 1, 0);
     float fov = 45.0f;
     float aspect = (float) WINDOW_WIDTH / (float) WINDOW_HEIGHT;
@@ -55,6 +98,7 @@ void display() {
 
     auto* camera = new Camera(eye, lookAt, up, fov, aspect, zNear, zFar);
     auto* renderer = new Renderer(scene, camera);
+    renderer->setRenderMode(RenderMode::NORMAL);
     renderer->draw();
 
     glClear(GL_COLOR_BUFFER_BIT);
