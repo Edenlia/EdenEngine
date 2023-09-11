@@ -17,8 +17,9 @@ namespace EE {
         Renderer(Scene* scene, Camera* camera);
         void draw();
         void drawTriangle(Triangle* triangle);
-        static bool insideTriangle(glm::vec3 p, glm::vec3 a, glm::vec3 b, glm::vec3 c);
-        [[nodiscard]] glm::vec3 getFrame(int x, int y) const { return frameBuffer[y + x * scene->getWidth()] ; };
+        static bool insideTriangle(const glm::vec3& p, const glm::vec3& a, const glm::vec3& b, const glm::vec3& c);
+        [[nodiscard]] glm::vec3 getFrame(int x, int y) const { return frameBuffer[getIndex(x,y)] ; };
+        int getIndex(int x, int y) const { return x + y * scene->getWidth(); };
 
     private:
         Scene* scene;

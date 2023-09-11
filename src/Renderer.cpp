@@ -31,7 +31,7 @@ namespace EE {
 
                     vertex = projectionMatrix * vertex;
                     vertex /= vertex.w;
-                    std::cout << "projection vertex: " << vertex.x << " " << vertex.y << " " << vertex.z << std::endl;
+//                    std::cout << "projection vertex: " << vertex.x << " " << vertex.y << " " << vertex.z << std::endl;
                     vertex.x = (vertex.x + 1.0f) * (float) scene->getWidth() / 2.0f; // NDC to screen, [-1,1] to [0, width]
                     vertex.y = (vertex.y + 1.0f) * (float) scene->getHeight() / 2.0f; // NDC to screen, [-1,1] to [0, height]
                     vertex.z = bufferZ; // z store the depth of the vertex in view coordinate, it is linear, near plane to far plane
@@ -39,7 +39,9 @@ namespace EE {
                     screenTriangle->setColor(i, triangle->getColor(i));
                 }
 
-//                std::cout << "screenTriangle: " << "v0: " << screenTriangle->getVertex(0).x << " " << screenTriangle->getVertex(0).y << " " << screenTriangle->getVertex(0).z << std::endl;
+//                std::cout << "screenTriangle v0: " << "v0: " << screenTriangle->getVertex(0).x << " " << screenTriangle->getVertex(0).y << " " << screenTriangle->getVertex(0).z << std::endl;
+//                std::cout << "screenTriangle v1: " << "v1: " << screenTriangle->getVertex(1).x << " " << screenTriangle->getVertex(1).y << " " << screenTriangle->getVertex(1).z << std::endl;
+//                std::cout << "screenTriangle v2: " << "v2: " << screenTriangle->getVertex(2).x << " " << screenTriangle->getVertex(2).y << " " << screenTriangle->getVertex(2).z << std::endl;
 
                 drawTriangle(screenTriangle);
             }
@@ -71,35 +73,34 @@ namespace EE {
         for (int x = minX; x <= maxX; x++) {
             for (int y = minY; y <= maxY; y++) {
                 glm::vec3 p((float) x + 0.5f, (float) y + 0.5f, 0.0f);
-//                std::cout << "start draw" << std::endl;
                 if (insideTriangle(p, v0, v1, v2)) {
-//                    std::cout << "insideTriangle!" << std::endl;
-                    auto[alpha, beta, gamma] = computeBarycentric2D(p.x, p.x, v0, v1, v2);
+                    auto[alpha, beta, gamma] = computeBarycentric2D(p.x, p.y, v0, v1, v2);
+//                    std::cout << "alpha: " << alpha << " beta: " << beta << " gamma: " << gamma << std::endl;
                     // interpolate z buffer: https://zhuanlan.zhihu.com/p/144331875
                     float z = 1 / (alpha / v0.z + beta / v1.z + gamma / v2.z);
-                    if (z < depthBuffer[y + x * scene->getWidth()] && z <= this->camera->getFarPlane() && z >= this->camera->getNearPlane()) {
-//                        std::cout << "update!" << std::endl;
-                        depthBuffer[y + x * scene->getWidth()] = z;
-                        frameBuffer[y + x * scene->getWidth()] = z * (alpha * c0 / v0.z + beta * c1 / v1.z + gamma * c2 / v2.z);
+                    if (z < depthBuffer[getIndex(x,y)] && z <= this->camera->getFarPlane() && z >= this->camera->getNearPlane()) {
+                        depthBuffer[getIndex(x,y)] = z;
+                        frameBuffer[getIndex(x,y)] = z * (alpha * c0 / v0.z + beta * c1 / v1.z + gamma * c2 / v2.z);
                     }
                 }
             }
         }
     }
 
-    bool Renderer::insideTriangle(glm::vec3 p, glm::vec3 a, glm::vec3 b, glm::vec3 c) {
-        glm::vec3 ab = b - a;
-        glm::vec3 bc = c - b;
-        glm::vec3 ca = a - c;
-        glm::vec3 ap = p - a;
-        glm::vec3 bp = p - b;
-        glm::vec3 cp = p - c;
+    bool Renderer::insideTriangle(const glm::vec3& p, const glm::vec3& a, const glm::vec3& b, const glm::vec3& c) {
+        glm::vec2 ab = glm::vec2(b.x - a.x, b.y - a.y);
+        glm::vec2 bc = glm::vec2(c.x - b.x, c.y - b.y);
+        glm::vec2 ca = glm::vec2(a.x - c.x, a.y - c.y);
+        glm::vec2 ap = glm::vec2(p.x - a.x, p.y - a.y);
+        glm::vec2 bp = glm::vec2(p.x - b.x, p.y - b.y);
+        glm::vec2 cp = glm::vec2(p.x - c.x, p.y - c.y);
 
-        glm::vec3 abp = glm::cross(ab, ap);
-        glm::vec3 bcp = glm::cross(bc, bp);
-        glm::vec3 cap = glm::cross(ca, cp);
+        float c1 = ab.x * ap.y - ab.y * ap.x;
+        float c2 = bc.x * bp.y - bc.y * bp.x;
+        float c3 = ca.x * cp.y - ca.y * cp.x;
 
-        return (glm::dot(abp, bcp) >= 0) && (glm::dot(bcp, cap) >= 0);
+
+        return (c1 >= 0 && c2 >= 0 && c3 >= 0) || (c1 <= 0 && c2 <= 0 && c3 <= 0);
     }
 
 

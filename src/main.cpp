@@ -26,23 +26,23 @@ void display() {
     auto* obj = new Object();
 
     auto *t1 = new Triangle();
-    t1->setVertex(0, vec3(2, 0, -10));
-    t1->setVertex(1, vec3(0, 2, -10));
-    t1->setVertex(2, vec3(-2, 0, -10));
-    t1->setColor(0, {0, 255, 0});
-    t1->setColor(1, {0, 255, 0});
-    t1->setColor(2, {0, 255, 0});
+    t1->setVertex(0, vec3(2, 0, 3));
+    t1->setVertex(1, vec3(0, 2, 3));
+    t1->setVertex(2, vec3(-2, 0, 3));
+    t1->setColor(0, {1, 0, 0});
+    t1->setColor(1, {0, 1, 0});
+    t1->setColor(2, {0, 0, 1});
 
     auto *t2 = new Triangle();
     t2->setVertex(0, vec3(3.5, -1, 5));
     t2->setVertex(1, vec3(2.5, 1.5, 5));
     t2->setVertex(2, vec3(-1, 0.5, 1));
-    t2->setColor(0, {255, 0, 0});
-    t2->setColor(1, {255, 0, 0});
-    t2->setColor(2, {255, 0, 0});
+    t2->setColor(0, {1, 0, 0});
+    t2->setColor(1, {1, 0, 0});
+    t2->setColor(2, {1, 0, 0});
 
     obj->addTriangle(t1);
-    obj->addTriangle(t2);
+//    obj->addTriangle(t2);
     scene->addObject(obj);
 
     vec3 eye(0, 0, -5);

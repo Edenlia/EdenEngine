@@ -19,6 +19,7 @@ namespace EE {
         [[nodiscard]] std::vector<EE::Object*> getObjects() const { return objects; };
         [[nodiscard]] int getWidth() const { return width; };
         [[nodiscard]] int getHeight() const { return height; };
+        glm::mat4 getViewPortMatrix() const;
 
     private:
         std::vector<EE::Object*> objects;
