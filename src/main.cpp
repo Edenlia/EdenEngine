@@ -14,7 +14,7 @@
 using namespace glm;
 using namespace EE;
 
-const int WINDOW_WIDTH = 800;
+const int WINDOW_WIDTH = 1600;
 const int WINDOW_HEIGHT = 800;
 
 void setPixel(int x, int y, float r, float g, float b) {
@@ -25,7 +25,7 @@ void setPixel(int x, int y, float r, float g, float b) {
 }
 
 void display() {
-    auto* scene = new Scene(WINDOW_WIDTH, WINDOW_HEIGHT);
+    auto* scene = new Scene();
 
     Assimp::Importer importer;
 
@@ -97,6 +97,8 @@ void display() {
     float zFar = 50.0f;
 
     auto* camera = new Camera(eye, lookAt, up, fov, aspect, zNear, zFar);
+    camera->setWidth(WINDOW_WIDTH);
+    camera->setHeight(WINDOW_HEIGHT);
     auto* renderer = new Renderer(scene, camera);
     renderer->setRenderMode(RenderMode::NORMAL);
     renderer->draw();

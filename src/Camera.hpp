@@ -20,6 +20,10 @@ namespace EE {
         [[nodiscard]] glm::mat4 getProjectionMatrix() const { return glm::perspectiveLH(fov, aspect, zNear, zFar); };
         [[nodiscard]] float getNearPlane() const { return zNear; };
         [[nodiscard]] float getFarPlane() const { return zFar; };
+        [[nodiscard]] int getWidth() const { return width; };
+        [[nodiscard]] int getHeight() const { return height; };
+        void setWidth(int w) { this->width = w; };
+        void setHeight(int h) { this->height = h; };
 
     private:
         glm::vec3 position;
@@ -30,6 +34,8 @@ namespace EE {
         float aspect;
         float zNear;
         float zFar;
+        int width;
+        int height;
 
     };
 

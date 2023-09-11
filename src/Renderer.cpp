@@ -14,9 +14,9 @@ namespace EE {
         this->viewMatrix = this->camera->getViewMatrix();
         this->projectionMatrix = this->camera->getProjectionMatrix();
         this->depthBuffer = std::vector<float>(
-                (int) scene->getWidth() * (int) scene->getHeight(),std::numeric_limits<float>::max());
+                (int) camera->getWidth() * (int) camera->getHeight(),std::numeric_limits<float>::max());
         this->frameBuffer = std::vector<glm::vec3>(
-                (int) scene->getWidth() * (int) scene->getHeight(), glm::vec3(0, 0, 0));
+                (int) camera->getWidth() * (int) camera->getHeight(), glm::vec3(0, 0, 0));
     }
 
     void Renderer::draw() {
@@ -32,8 +32,8 @@ namespace EE {
                     vertex = projectionMatrix * vertex;
                     vertex /= vertex.w;
 //                    std::cout << "projection vertex: " << vertex.x << " " << vertex.y << " " << vertex.z << std::endl;
-                    vertex.x = (vertex.x + 1.0f) * (float) scene->getWidth() / 2.0f; // NDC to screen, [-1,1] to [0, width]
-                    vertex.y = (vertex.y + 1.0f) * (float) scene->getHeight() / 2.0f; // NDC to screen, [-1,1] to [0, height]
+                    vertex.x = (vertex.x + 1.0f) * (float) camera->getWidth() / 2.0f; // NDC to screen, [-1,1] to [0, width]
+                    vertex.y = (vertex.y + 1.0f) * (float) camera->getHeight() / 2.0f; // NDC to screen, [-1,1] to [0, height]
                     vertex.z = bufferZ; // z store the depth of the vertex in view coordinate, it is linear, near plane to far plane
                     screenTriangle->setVertex(i, glm::vec3(vertex.x, vertex.y, vertex.z));
                     screenTriangle->setColor(i, triangle->getColor(i));
@@ -67,9 +67,9 @@ namespace EE {
 
         // Clipping
         minX = std::max(0, minX);
-        maxX = std::min((int) scene->getWidth() - 1, maxX);
+        maxX = std::min((int) camera->getWidth() - 1, maxX);
         minY = std::max(0, minY);
-        maxY = std::min((int) scene->getHeight() - 1, maxY);
+        maxY = std::min((int) camera->getHeight() - 1, maxY);
 
         // Rasterization
         for (int x = minX; x <= maxX; x++) {
@@ -124,14 +124,14 @@ namespace EE {
 //                std::cout << "normal: " << normal.x << " " << normal.y << " " << normal.z << std::endl;
                 color = (normal + glm::vec3(1, 1, 1)) / 2.f;
                 break;
-            case WIREFRAME:
-                break;
-            case VERTEX:
-                break;
-            case DEPTH:
-                break;
-            case TEXTURE:
-                break;
+//            case WIREFRAME:
+//                break;
+//            case VERTEX:
+//                break;
+//            case DEPTH:
+//                break;
+//            case TEXTURE:
+//                break;
         }
 //        std::cout << "color: " << color.x << " " << color.y << " " << color.z << std::endl;
         return color;
