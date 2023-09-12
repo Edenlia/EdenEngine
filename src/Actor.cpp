@@ -27,11 +27,6 @@ namespace EE {
         modelMatrix = glm::rotate(modelMatrix, glm::radians(transform[1].y), glm::vec3(0.0f, 1.0f, 0.0f));
         modelMatrix = glm::rotate(modelMatrix, glm::radians(transform[1].z), glm::vec3(0.0f, 0.0f, 1.0f));
         modelMatrix = glm::scale(modelMatrix, transform[2]);
-//        std::cout << "Model Matrix: " << modelMatrix[0][0] << " " << modelMatrix[0][1] << " " << modelMatrix[0][2] << " " << modelMatrix[0][3] << std::endl;
-//        std::cout << "Model Matrix: " << modelMatrix[1][0] << " " << modelMatrix[1][1] << " " << modelMatrix[1][2] << " " << modelMatrix[1][3] << std::endl;
-//        std::cout << "Model Matrix: " << modelMatrix[2][0] << " " << modelMatrix[2][1] << " " << modelMatrix[2][2] << " " << modelMatrix[2][3] << std::endl;
-//        std::cout << "Model Matrix: " << modelMatrix[3][0] << " " << modelMatrix[3][1] << " " << modelMatrix[3][2] << " " << modelMatrix[3][3] << std::endl;
-//        std::cout << std::endl;
         return modelMatrix;
     }
 } // EE

@@ -34,7 +34,7 @@ namespace EE {
                     aiVector3D vertex = mesh->mVertices[index];
                     aiColor4D color;
                     if (!mesh->HasVertexColors(0)) {
-                        color = aiColor4D(1.0f, 0.0f, 0.0f, 1.0f);
+                        color = aiColor4D(defaultColor.x, defaultColor.y, defaultColor.z, 1.0f);
                     } else {
                         color = mesh->mColors[0][index];
                     }

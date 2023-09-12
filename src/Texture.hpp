@@ -5,9 +5,15 @@
 #ifndef EDENENGINE_TEXTURE_HPP
 #define EDENENGINE_TEXTURE_HPP
 
+#include "glm/glm.hpp"
+
 namespace EE {
 
     class Texture {
+    public:
+        Texture();
+        [[nodiscard]] glm::vec3 getColor(float u, float v) const;
+    private:
 
     };
 

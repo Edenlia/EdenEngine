@@ -24,6 +24,7 @@ namespace EE {
         [[nodiscard]] int getHeight() const { return height; };
         void setWidth(int w) { this->width = w; };
         void setHeight(int h) { this->height = h; };
+        [[nodiscard]] glm::vec3 getPosition() const { return position; };
 
     private:
         glm::vec3 position;

@@ -19,10 +19,4 @@ namespace EE {
         this->color[1] = glm::vec3(0.f, 0.f, 0.f);
         this->color[2] = glm::vec3(0.f, 0.f, 0.f);
     }
-
-    std::array<glm::vec4, 3> Triangle::ToVector4() {
-        std::array<glm::vec4, 3> res{};
-        std::transform(std::begin(vertices), std::end(vertices), res.begin(), [](auto& vec) { return glm::vec4(vec.x, vec.y, vec.z, vec.w); });
-        return res;
-    }
 } // EE

@@ -26,11 +26,11 @@ void display() {
     auto* modelReader = new ModelReader();
     modelReader->readModel("../models/bunny/bunny.obj", "bunny");
     auto *atr1 = new Actor(modelReader->getModel("bunny"),
-                           glm::vec3 (1, -0.05, 0),
+                           glm::vec3 (1, 0, 0),
                            glm::vec3(0, 0, 0),
                            glm::vec3(7, 7, 7));
     auto *atr2 = new Actor(modelReader->getModel("bunny"),
-                           glm::vec3 (0, -0.02, 0),
+                           glm::vec3 (0, 0, 0),
                            glm::vec3(0, 0, 0),
                            glm::vec3(5, 5, 5));
     auto *atr3 = new Actor(modelReader->getModel("bunny"),
@@ -41,6 +41,9 @@ void display() {
     scene->addActor(atr1);
     scene->addActor(atr2);
     scene->addActor(atr3);
+    auto* l1 = new PointLight(vec3(0, 0, 10), vec3(1, 1, 1), 100);
+
+    scene->addLight(l1);
 
     vec3 eye(0, .9, 1.2);
     vec3 lookAt(0, 0, -1);
@@ -54,7 +57,7 @@ void display() {
     camera->setWidth(WINDOW_WIDTH);
     camera->setHeight(WINDOW_HEIGHT);
     auto* renderer = new Renderer(scene, camera);
-    renderer->setRenderMode(RenderMode::NORMAL);
+    renderer->setRenderMode(RenderMode::BLINN_PHONG);
     renderer->draw();
 
     glClear(GL_COLOR_BUFFER_BIT);
