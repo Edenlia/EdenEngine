@@ -25,7 +25,7 @@ namespace EE {
                 auto* screenTriangle = new Triangle();
                 for (int i = 0; i < 3; i++) {
                     // model, view transform
-                    glm::vec4 vertex = actor->getModelMatrix() * glm::vec4(triangle->getVertex(i), 1.0f);
+                    glm::vec4 vertex = actor->getModelMatrix() * triangle->getVertex(i);
                     vertex = viewMatrix * vertex;
                     vertex /= vertex.w;
                     float bufferZ = vertex.z; // Depth of z, we store the view depth because that is linear
