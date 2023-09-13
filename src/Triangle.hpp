@@ -6,7 +6,7 @@
 #define EDENENGINE_TRIANGLE_HPP
 
 #include "glm/glm.hpp"
-#include "Texture.hpp"
+#include "Material.hpp"
 #include <array>
 
 namespace EE {
@@ -19,7 +19,7 @@ namespace EE {
         glm::vec3 normal[3]{};
         glm::vec3 color[3]{};
         glm::vec2 uv[3]{};
-        Texture* texture = nullptr;
+        Material* texture = nullptr;
 
 
 

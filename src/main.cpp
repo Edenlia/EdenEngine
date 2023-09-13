@@ -6,6 +6,7 @@
 #include "Renderer.hpp"
 #include "util/ModelReader.hpp"
 #include <assimp/Importer.hpp>
+#include <fstream>
 
 using namespace glm;
 using namespace EE;
@@ -24,23 +25,23 @@ void display() {
     auto* scene = new Scene();
 
     auto* modelReader = new ModelReader();
-    modelReader->readModel("../models/bunny/bunny.obj", "bunny");
-    auto *atr1 = new Actor(modelReader->getModel("bunny"),
-                           glm::vec3 (1, 0, 0),
-                           glm::vec3(0, 0, 0),
-                           glm::vec3(7, 7, 7));
-    auto *atr2 = new Actor(modelReader->getModel("bunny"),
+    modelReader->readModel("../models/Stanford Bunny/Stanford Bunny.dae", "Stanford Bunny");
+//    auto *atr1 = new Actor(modelReader->getModel("Stanford Bunny"),
+//                           glm::vec3 (1, 0, 0),
+//                           glm::vec3(0, 0, 0),
+//                           glm::vec3(7, 7, 7));
+    auto *atr2 = new Actor(modelReader->getModel("Stanford Bunny"),
                            glm::vec3 (0, 0, 0),
                            glm::vec3(0, 0, 0),
-                           glm::vec3(5, 5, 5));
-    auto *atr3 = new Actor(modelReader->getModel("bunny"),
-                           glm::vec3 (-1, 0, 0),
-                           glm::vec3(0, 0, 0),
-                           glm::vec3(3, 3, 3));
+                           glm::vec3(0.01, 0.01, 0.01));
+//    auto *atr3 = new Actor(modelReader->getModel("Stanford Bunny"),
+//                           glm::vec3 (-1, 0, 0),
+//                           glm::vec3(0, 0, 0),
+//                           glm::vec3(3, 3, 3));
 
-    scene->addActor(atr1);
+//    scene->addActor(atr1);
     scene->addActor(atr2);
-    scene->addActor(atr3);
+//    scene->addActor(atr3);
     auto* l1 = new PointLight(vec3(0, 0, 10), vec3(255, 255, 255), 100);
 
     scene->addLight(l1);

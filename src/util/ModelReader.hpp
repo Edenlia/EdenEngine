@@ -13,20 +13,30 @@
 #include <map>
 #include "Scene.hpp"
 #include "Model.hpp"
-#include "Texture.hpp"
+#include "Material.hpp"
 
 namespace EE {
+    enum ModelFormat {
+        OBJ,
+        DAE,
+        DEFAULT,
+    };
 
     class ModelReader {
     public:
         ModelReader() = default;
         ~ModelReader() = default;
         void readModel(const std::string& path, const std::string& name);
+        void readDaeModel(const std::string& path, const std::string& name);
+        void readObjModel(const std::string& path, const std::string& name);
         Model* getModel(const std::string& name) { return this->models[name]; };
-        Texture* getTexture(const std::string& name) { return this->textures[name]; };
+        Material* getTexture(const std::string& name) { return this->textures[name]; };
+
+        static ModelFormat getFileFormat(const std::string& filename);
+
     private:
         std::map<std::string, Model*> models;
-        std::map<std::string, Texture*> textures;
+        std::map<std::string, Material*> textures;
 
         glm::vec3 defaultColor = glm::vec3(53.0, 33.0, 24.0);
     };

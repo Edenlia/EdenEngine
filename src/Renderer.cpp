@@ -25,10 +25,14 @@ namespace EE {
         for (auto &actor : scene->getActors()) {
             for (auto &triangle : actor->getModel()->getTriangles()) {
                 auto* screenTriangle = new Triangle();
+                glm::vec3 worldPos[3];
                 for (int i = 0; i < 3; i++) {
                     // model, view transform
                     glm::vec4 vertex = actor->getModelMatrix() * triangle->getVertex(i);
                     vertex = viewMatrix * vertex;
+
+                    worldPos[i] = glm::vec3(vertex);
+
                     vertex /= vertex.w;
                     float bufferZ = vertex.z; // Depth of z, we store the view depth because that is linear
                     // projection transform
@@ -44,7 +48,6 @@ namespace EE {
                     screenTriangle->setUV(i, triangle->getUV(i));
                     screenTriangle->texture = triangle->texture;
                 }
-                glm::vec3 worldPos[3] = {triangle->getVertex(0), triangle->getVertex(1), triangle->getVertex(2)};
                 drawTriangle(screenTriangle, worldPos);
             }
         }
@@ -129,8 +132,8 @@ namespace EE {
         switch (renderMode) {
             case RenderMode::RASTERIZATION:
             {
-                if (payload.texture != nullptr) {
-                    color = payload.texture->getColor(payload.uv.x, payload.uv.y);
+                if (payload.material != nullptr) {
+                    color = payload.material->getColor(payload.uv.x, payload.uv.y);
                 } else {
                     color = payload.color / 255.0f;
                 }
@@ -145,16 +148,15 @@ namespace EE {
 
             case BLINN_PHONG:
             {
-                glm::vec3 albedo = payload.texture ? payload.texture->getColor(payload.uv.x, payload.uv.y) : payload.color / 255.0f;
-//                std::cout << "albedo: " << albedo.x << " " << albedo.y << " " << albedo.z << std::endl;
+                glm::vec3 albedo = payload.material ? payload.material->getColor(payload.uv.x, payload.uv.y) : payload.color / 255.0f;
                 glm::vec3 ka = glm::vec3(0.001, 0.001, 0.001);
                 glm::vec3 kd = albedo;
                 glm::vec3 ks = glm::vec3(0.7937, 0.7937, 0.7937);
                 float p = 100.f;
 
+
                 for (auto* light : scene->getLights()) {
                     glm::vec3 I = light->getColor() * light->getIntensity() / 255.0f;
-//                    std::cout << "I: " << I.x << " " << I.y << " " << I.z << std::endl;
                     float r2 = glm::dot(light->getPosition() - payload.worldPos, light->getPosition() - payload.worldPos);
                     glm::vec3 wi = glm::normalize(light->getPosition() - payload.worldPos);
                     glm::vec3 n = glm::normalize(payload.normal);

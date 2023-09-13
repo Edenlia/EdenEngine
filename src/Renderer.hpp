@@ -7,7 +7,7 @@
 
 #include "Scene.hpp"
 #include "Camera.hpp"
-#include "Texture.hpp"
+#include "Material.hpp"
 #include <iostream>
 
 
@@ -25,7 +25,7 @@ namespace EE {
         glm::vec2 uv;
         float depth;
         glm::vec3 worldPos;
-        Texture* texture;
+        Material* material;
     };
 
     class Renderer {
