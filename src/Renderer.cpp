@@ -132,7 +132,7 @@ namespace EE {
                 if (payload.texture != nullptr) {
                     color = payload.texture->getColor(payload.uv.x, payload.uv.y);
                 } else {
-                    color = payload.color;
+                    color = payload.color / 255.0f;
                 }
                 break;
             }
@@ -145,7 +145,7 @@ namespace EE {
 
             case BLINN_PHONG:
             {
-                glm::vec3 albedo = payload.texture ? payload.texture->getColor(payload.uv.x, payload.uv.y) : payload.color;
+                glm::vec3 albedo = payload.texture ? payload.texture->getColor(payload.uv.x, payload.uv.y) : payload.color / 255.0f;
 //                std::cout << "albedo: " << albedo.x << " " << albedo.y << " " << albedo.z << std::endl;
                 glm::vec3 ka = glm::vec3(0.001, 0.001, 0.001);
                 glm::vec3 kd = albedo;
@@ -153,7 +153,7 @@ namespace EE {
                 float p = 100.f;
 
                 for (auto* light : scene->getLights()) {
-                    glm::vec3 I = light->getColor() * light->getIntensity();
+                    glm::vec3 I = light->getColor() * light->getIntensity() / 255.0f;
 //                    std::cout << "I: " << I.x << " " << I.y << " " << I.z << std::endl;
                     float r2 = glm::dot(light->getPosition() - payload.worldPos, light->getPosition() - payload.worldPos);
                     glm::vec3 wi = glm::normalize(light->getPosition() - payload.worldPos);

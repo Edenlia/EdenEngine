@@ -41,7 +41,7 @@ void display() {
     scene->addActor(atr1);
     scene->addActor(atr2);
     scene->addActor(atr3);
-    auto* l1 = new PointLight(vec3(0, 0, 10), vec3(1, 1, 1), 100);
+    auto* l1 = new PointLight(vec3(0, 0, 10), vec3(255, 255, 255), 100);
 
     scene->addLight(l1);
 

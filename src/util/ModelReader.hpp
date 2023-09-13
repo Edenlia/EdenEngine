@@ -28,7 +28,7 @@ namespace EE {
         std::map<std::string, Model*> models;
         std::map<std::string, Texture*> textures;
 
-        glm::vec3 defaultColor = glm::vec3(53.0 / 255.0, 33.0 / 255.0, 24.0 / 255.0);
+        glm::vec3 defaultColor = glm::vec3(53.0, 33.0, 24.0);
     };
 
 } // EE
