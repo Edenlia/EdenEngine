@@ -5,6 +5,7 @@
 #include "ModelReader.hpp"
 #include <iostream>
 #include <glm/glm.hpp>
+#include "ext/stb/stb_image.h"
 
 namespace EE {
     void ModelReader::readModel(const std::string &path, const std::string& name) {
@@ -24,7 +25,7 @@ namespace EE {
         for (int i = 0; i < as->mNumMeshes; i++) {
             aiMesh *mesh = as->mMeshes[i];
             aiMaterial *material = as->mMaterials[mesh->mMaterialIndex];
-
+            std::cout << "material name: " << material->GetName().C_Str() << std::endl;
             
             if (material->GetTextureCount(aiTextureType_NORMALS) > 0) {
                 aiString str;
@@ -59,26 +60,8 @@ namespace EE {
         }
     }
 
-    ModelFormat ModelReader::getFileFormat(const std::string &filename) {
-        {
-            size_t pos = filename.find_last_of('.');
-            if (pos == std::string::npos) {
-                return DEFAULT;
-            }
-            if (filename.substr(pos + 1) == "obj")
-                return OBJ;
-            else if (filename.substr(pos + 1) == "dae")
-                return DAE;
-            else
-                return DEFAULT;
-        }
-    }
+    void ModelReader::readMaterial(const std::string &dirPath, const std::string &modelName, const std::string &materialName) {
 
-    void ModelReader::readDaeModel(const std::string &path, const std::string &name) {
-
-    }
-
-    void ModelReader::readObjModel(const std::string &path, const std::string &name) {
 
     }
 } // EE

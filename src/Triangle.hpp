@@ -19,9 +19,7 @@ namespace EE {
         glm::vec3 normal[3]{};
         glm::vec3 color[3]{};
         glm::vec2 uv[3]{};
-        Material* texture = nullptr;
-
-
+        Material* material = nullptr;
 
         void setColor(int i, glm::vec3 clr) { this->color[i] = clr; };
         void setNormal(int i, glm::vec3 n) { this->normal[i] = n; };

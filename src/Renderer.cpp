@@ -46,7 +46,7 @@ namespace EE {
                     screenTriangle->setColor(i, triangle->getColor(i));
                     screenTriangle->setNormal(i, triangle->getNormal(i));
                     screenTriangle->setUV(i, triangle->getUV(i));
-                    screenTriangle->texture = triangle->texture;
+                    screenTriangle->material = triangle->material;
                 }
                 drawTriangle(screenTriangle, worldPos);
             }
@@ -101,7 +101,7 @@ namespace EE {
                                                             beta * worldPos[1] / triangle->getVertex(1).z +
                                                             gamma * worldPos[2] / triangle->getVertex(2).z);
 
-                        fragmentPayload payload = {fragmentColor, fragmentNormal, fragmentUV, w, fragmentPosition, triangle->texture};
+                        fragmentPayload payload = {fragmentColor, fragmentNormal, fragmentUV, w, fragmentPosition, triangle->material};
 
                         frameBuffer[getIndex(x,y)] = fragmentShader(payload);
                     }

@@ -26,6 +26,7 @@ file(GLOB SOURCE_FILE
         ${CMAKE_SOURCE_DIR}/src/util/*.cpp
         ${CMAKE_SOURCE_DIR}/src/ext/*/*.h
         ${CMAKE_SOURCE_DIR}/src/ext/*/*.hpp
+        ${CMAKE_SOURCE_DIR}/src/ext/*/*.cpp
 )
 
 # Sort the file into different folders

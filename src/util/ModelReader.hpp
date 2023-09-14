@@ -27,16 +27,12 @@ namespace EE {
         ModelReader() = default;
         ~ModelReader() = default;
         void readModel(const std::string& path, const std::string& name);
-        void readDaeModel(const std::string& path, const std::string& name);
-        void readObjModel(const std::string& path, const std::string& name);
+        void readMaterial(const std::string &dirPath, const std::string &modelName, const std::string &materialName);
         Model* getModel(const std::string& name) { return this->models[name]; };
-        Material* getTexture(const std::string& name) { return this->textures[name]; };
-
-        static ModelFormat getFileFormat(const std::string& filename);
-
+        Material* getMaterial(const std::string& name) { return this->materials[name]; };
     private:
         std::map<std::string, Model*> models;
-        std::map<std::string, Material*> textures;
+        std::map<std::string, Material*> materials;
 
         glm::vec3 defaultColor = glm::vec3(53.0, 33.0, 24.0);
     };
