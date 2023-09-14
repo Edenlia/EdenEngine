@@ -39,6 +39,7 @@ namespace EE {
         glm::vec3 fragmentShader(const fragmentPayload &payload);
         void setRenderMode(RenderMode m) { renderMode = m; };
         [[nodiscard]] RenderMode getRenderMode() const { return renderMode; };
+        void writeFrameBuffer2Pixel(unsigned char* data);
 
     private:
         Scene* scene;

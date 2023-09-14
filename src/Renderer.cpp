@@ -126,8 +126,8 @@ namespace EE {
 
                         fragmentPayload payload = {fragmentColor, fragmentNormal, fragmentUV, w, fragmentPosition, screenTriangle->material};
 
-
                         frameBuffer[getIndex(x,y)] = fragmentShader(payload);
+//                        std::cout << "fragmentColor: " << frameBuffer[getIndex(x,y)].x << " " << frameBuffer[getIndex(x,y)].y << " " << frameBuffer[getIndex(x,y)].z << std::endl;
                     }
                 }
             }
@@ -154,7 +154,7 @@ namespace EE {
     glm::vec3 Renderer::fragmentShader(const fragmentPayload &payload) {
         glm::vec3 color = glm::vec3(0, 0, 0);
         switch (renderMode) {
-            case RenderMode::RASTERIZATION:
+            case RASTERIZATION:
             {
                 if (payload.material && payload.material->getAlbedoMap()) {
                     color = payload.material->getColor(payload.uv.x, payload.uv.y) / 255.0f;
@@ -196,7 +196,6 @@ namespace EE {
                 }
                 break;
             }
-
             case DEPTH:
             {
                 color = glm::vec3(payload.depth, payload.depth, payload.depth);
@@ -205,5 +204,16 @@ namespace EE {
         }
 //        std::cout << "color: " << color.x << " " << color.y << " " << color.z << std::endl;
         return color;
+    }
+
+    void Renderer::writeFrameBuffer2Pixel(unsigned char *data) {
+        for (int i = 0; i < camera->getWidth(); i++) {
+            for (int j = 0; j < camera->getHeight(); j++) {
+                int pixelIndex =  (i + (camera->getHeight() - 1 - j) * camera->getWidth());
+                data[pixelIndex * 3] = (unsigned char) (frameBuffer[getIndex(i,j)].x * 255);
+                data[pixelIndex * 3 + 1] = (unsigned char) (frameBuffer[getIndex(i,j)].y * 255);
+                data[pixelIndex * 3 + 2] = (unsigned char) (frameBuffer[getIndex(i,j)].z * 255);
+            }
+        }
     }
 } // EE

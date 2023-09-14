@@ -40,13 +40,13 @@ endforeach()
 add_executable(EdenEngine ${SOURCE_FILE})
 
 find_package(GLEW REQUIRED)
-find_package(GLUT REQUIRED)
 find_package(assimp REQUIRED)
 find_package(glm CONFIG REQUIRED)
+find_package(GLFW3 CONFIG REQUIRED)
 
 
-target_link_libraries(EdenEngine PRIVATE GLUT::GLUT)
 target_link_libraries(EdenEngine PRIVATE GLEW::GLEW)
 target_link_libraries(EdenEngine PRIVATE assimp::assimp)
 target_link_libraries(EdenEngine PRIVATE glm::glm)
+target_link_libraries(EdenEngine PRIVATE glfw)
 
