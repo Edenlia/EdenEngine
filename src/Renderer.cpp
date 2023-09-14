@@ -203,6 +203,7 @@ namespace EE {
             }
         }
 //        std::cout << "color: " << color.x << " " << color.y << " " << color.z << std::endl;
+        color = glm::clamp(color, 0.f, 1.f);
         return color;
     }
 
@@ -210,6 +211,8 @@ namespace EE {
         for (int i = 0; i < camera->getWidth(); i++) {
             for (int j = 0; j < camera->getHeight(); j++) {
                 int pixelIndex =  (i + (camera->getHeight() - 1 - j) * camera->getWidth());
+                if(frameBuffer[getIndex(i,j)].x > 1 || frameBuffer[getIndex(i,j)].y > 1 || frameBuffer[getIndex(i,j)].z > 1)
+                    std::cerr << "ERROR! Color value is greater than 1" << std::endl;
                 data[pixelIndex * 3] = (unsigned char) (frameBuffer[getIndex(i,j)].x * 255);
                 data[pixelIndex * 3 + 1] = (unsigned char) (frameBuffer[getIndex(i,j)].y * 255);
                 data[pixelIndex * 3 + 2] = (unsigned char) (frameBuffer[getIndex(i,j)].z * 255);
