@@ -26,8 +26,8 @@ namespace EE {
     public:
         ModelReader() = default;
         ~ModelReader() = default;
-        void readModel(const std::string& path, const std::string& name);
-        void readMaterial(const std::string &dirPath, const std::string &modelName, const std::string &materialName);
+        void readModel(const std::string &dirPath, const std::string& name, const std::string &extension);
+        void readMaterial(const std::string &dirPath, const std::string &modelName, const std::string &materialIndexName);
         Model* getModel(const std::string& name) { return this->models[name]; };
         Material* getMaterial(const std::string& name) { return this->materials[name]; };
     private:

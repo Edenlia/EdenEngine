@@ -1,5 +1,5 @@
 //
-// Created by 章书飏 on 2023/9/13.
+// Created by Shuyang Zhang on 2023/9/13.
 //
 
 #ifndef EDENENGINE_TEXTURE_HPP
@@ -19,7 +19,7 @@ namespace EE {
         int height;
         unsigned char* raw_data;
 
-        glm::vec3 getValue(float u, float v) const;
+        [[nodiscard]] glm::vec3 getValue(float u, float v) const;
     };
 
 } // EE

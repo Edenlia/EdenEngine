@@ -1,5 +1,5 @@
 //
-// Created by 章书飏 on 2023/9/13.
+// Created by Shuyang Zhang on 2023/9/13.
 //
 
 #include "Texture.hpp"

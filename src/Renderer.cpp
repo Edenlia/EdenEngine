@@ -53,15 +53,15 @@ namespace EE {
         }
     }
 
-    // draw triangle, the param triangle's z value is view coordinate's z value
-    void Renderer::drawTriangle(Triangle* triangle, glm::vec3 worldPos[3]) {
-        glm::vec4 v0 = triangle->getVertex(0);
-        glm::vec4 v1 = triangle->getVertex(1);
-        glm::vec4 v2 = triangle->getVertex(2);
+    // draw screenTriangle, the param screenTriangle's z value is view coordinate's z value
+    void Renderer::drawTriangle(Triangle* screenTriangle, glm::vec3 worldPos[3]) {
+        glm::vec4 v0 = screenTriangle->getVertex(0);
+        glm::vec4 v1 = screenTriangle->getVertex(1);
+        glm::vec4 v2 = screenTriangle->getVertex(2);
 
-        glm::vec3 c0 = triangle->getColor(0);
-        glm::vec3 c1 = triangle->getColor(1);
-        glm::vec3 c2 = triangle->getColor(2);
+        glm::vec3 c0 = screenTriangle->getColor(0);
+        glm::vec3 c1 = screenTriangle->getColor(1);
+        glm::vec3 c2 = screenTriangle->getColor(2);
 
         // Bounding box
         int minX = std::min(v0.x, std::min(v1.x, v2.x));
@@ -88,20 +88,44 @@ namespace EE {
                     float w = 1 / (alpha / v0.w + beta / v1.w + gamma / v2.w);
                     if (w < depthBuffer[getIndex(x,y)] && w <= 1 && w >= 0) {
                         depthBuffer[getIndex(x,y)] = w;
-                        glm::vec3 fragmentColor =  z * (alpha * triangle->getColor(0) / triangle->getVertex(0).z +
-                                                         beta * triangle->getColor(1) / triangle->getVertex(1).z +
-                                                         gamma * triangle->getColor(2) / triangle->getVertex(2).z);
-                        glm::vec3 fragmentNormal = z * (alpha * triangle->getNormal(0) / triangle->getVertex(0).z +
-                                                         beta * triangle->getNormal(1) / triangle->getVertex(1).z +
-                                                         gamma * triangle->getNormal(2) / triangle->getVertex(2).z);
-                        glm::vec2 fragmentUV = z * (alpha * triangle->getUV(0) / triangle->getVertex(0).z +
-                                                         beta * triangle->getUV(1) / triangle->getVertex(1).z +
-                                                         gamma * triangle->getUV(2) / triangle->getVertex(2).z);
-                        glm::vec3 fragmentPosition = z * (alpha * worldPos[0] / triangle->getVertex(0).z +
-                                                            beta * worldPos[1] / triangle->getVertex(1).z +
-                                                            gamma * worldPos[2] / triangle->getVertex(2).z);
+                        glm::vec2 fragmentUV = z * (alpha * screenTriangle->getUV(0) / screenTriangle->getVertex(0).z +
+                                                    beta * screenTriangle->getUV(1) / screenTriangle->getVertex(1).z +
+                                                    gamma * screenTriangle->getUV(2) / screenTriangle->getVertex(2).z);
+                        glm::vec3 fragmentColor =  z * (alpha * screenTriangle->getColor(0) / screenTriangle->getVertex(0).z +
+                                                        beta * screenTriangle->getColor(1) / screenTriangle->getVertex(1).z +
+                                                        gamma * screenTriangle->getColor(2) / screenTriangle->getVertex(2).z);
+                        glm::vec3 fragmentNormal = z * (alpha * screenTriangle->getNormal(0) / screenTriangle->getVertex(0).z +
+                                                        beta * screenTriangle->getNormal(1) / screenTriangle->getVertex(1).z +
+                                                        gamma * screenTriangle->getNormal(2) / screenTriangle->getVertex(2).z);
+                        if (screenTriangle->material && screenTriangle->material->getNormalMap()) {
+                            glm::vec3 N = screenTriangle->material->getNormal(fragmentUV.x, fragmentUV.y);
+                            glm::vec3 deltaPos1 = worldPos[1] - worldPos[0];
+                            glm::vec3 deltaPos2 = worldPos[2] - worldPos[0];
 
-                        fragmentPayload payload = {fragmentColor, fragmentNormal, fragmentUV, w, fragmentPosition, triangle->material};
+                            glm::vec2 deltaUV1 = screenTriangle->getUV(1) - screenTriangle->getUV(0);
+                            glm::vec2 deltaUV2 = screenTriangle->getUV(2) - screenTriangle->getUV(0);
+
+                            float r = 1.0f / (deltaUV1.x * deltaUV2.y - deltaUV1.y * deltaUV2.x);
+                            glm::vec3 tangent = (deltaPos1 * deltaUV2.y - deltaPos2 * deltaUV1.y) * r;
+                            glm::vec3 bitangent = (deltaPos2 * deltaUV1.x - deltaPos1 * deltaUV2.x) * r;
+
+                            tangent = glm::normalize(tangent - glm::dot(tangent, N) * N);
+                            bitangent = glm::cross(N, tangent);
+                            glm::mat3 TBN = glm::mat3(tangent, bitangent, N);
+
+                            fragmentNormal = TBN * N;
+                            fragmentNormal = glm::normalize(fragmentNormal);
+                        }
+
+
+                        glm::vec3 fragmentPosition = z * (alpha * worldPos[0] / screenTriangle->getVertex(0).z +
+                                                          beta * worldPos[1] / screenTriangle->getVertex(1).z +
+                                                          gamma * worldPos[2] / screenTriangle->getVertex(2).z);
+
+
+
+                        fragmentPayload payload = {fragmentColor, fragmentNormal, fragmentUV, w, fragmentPosition, screenTriangle->material};
+
 
                         frameBuffer[getIndex(x,y)] = fragmentShader(payload);
                     }
@@ -132,8 +156,8 @@ namespace EE {
         switch (renderMode) {
             case RenderMode::RASTERIZATION:
             {
-                if (payload.material != nullptr) {
-                    color = payload.material->getColor(payload.uv.x, payload.uv.y);
+                if (payload.material && payload.material->getAlbedoMap()) {
+                    color = payload.material->getColor(payload.uv.x, payload.uv.y) / 255.0f;
                 } else {
                     color = payload.color / 255.0f;
                 }
@@ -142,13 +166,15 @@ namespace EE {
 
             case NORMAL:
             {
-                color = (payload.normal + glm::vec3(1, 1, 1)) / 2.f;
+                glm::vec3 n = payload.normal;
+
+                color = (n + glm::vec3(1, 1, 1)) / 2.f;
                 break;
             }
 
             case BLINN_PHONG:
             {
-                glm::vec3 albedo = payload.material ? payload.material->getColor(payload.uv.x, payload.uv.y) : payload.color / 255.0f;
+                glm::vec3 albedo = payload.material ? payload.material->getAlbedo(payload.uv.x, payload.uv.y) : payload.color / 255.0f;
                 glm::vec3 ka = glm::vec3(0.001, 0.001, 0.001);
                 glm::vec3 kd = albedo;
                 glm::vec3 ks = glm::vec3(0.7937, 0.7937, 0.7937);

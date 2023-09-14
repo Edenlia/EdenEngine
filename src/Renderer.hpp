@@ -32,7 +32,7 @@ namespace EE {
     public:
         Renderer(Scene* scene, Camera* camera);
         void draw();
-        void drawTriangle(Triangle* triangle, glm::vec3 worldPos[3]);
+        void drawTriangle(Triangle* screenTriangle, glm::vec3 worldPos[3]);
         static bool insideTriangle(const glm::vec3& p, const glm::vec3& a, const glm::vec3& b, const glm::vec3& c);
         [[nodiscard]] glm::vec3 getFrame(int x, int y) const { return frameBuffer[getIndex(x,y)] ; };
         [[nodiscard]] int getIndex(int x, int y) const { return x + y * camera->getWidth(); };

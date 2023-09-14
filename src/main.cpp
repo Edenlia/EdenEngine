@@ -25,7 +25,7 @@ void display() {
     auto* scene = new Scene();
 
     auto* modelReader = new ModelReader();
-    modelReader->readModel("../models/Stanford Bunny/Stanford Bunny.dae", "Stanford Bunny");
+    modelReader->readModel("../models/Stanford Bunny/", "Stanford Bunny", "dae");
 //    auto *atr1 = new Actor(modelReader->getModel("Stanford Bunny"),
 //                           glm::vec3 (1, 0, 0),
 //                           glm::vec3(0, 0, 0),
