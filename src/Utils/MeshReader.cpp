@@ -4,7 +4,6 @@
 
 #include "MeshReader.hpp"
 #include <iostream>
-#include <glm/glm.hpp>
 #define STB_IMAGE_IMPLEMENTATION
 #include "ext/stb/stb_image.h"
 

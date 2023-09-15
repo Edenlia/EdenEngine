@@ -2,11 +2,11 @@
 // Created by zsy01 on 2023/9/14.
 //
 
-#include "SoftwareRenderer.hpp"
+#include "SBlinnPhongRenderer.hpp"
 #include "Drawer/BlinnPhongDrawer.hpp"
 
 namespace EE {
-    void SoftwareRenderer::Initialize(Scene* scene, Camera* camera, WindowManager& windowManager, const std::string &vertexPath, const std::string &fragmentPath) {
+    void SBlinnPhongRenderer::Initialize(Scene* scene, Camera* camera, WindowManager& windowManager, const std::string &vertexPath, const std::string &fragmentPath) {
         {
             this->windowManager = &windowManager;
             this->scene = scene;
@@ -55,7 +55,7 @@ namespace EE {
         }
     }
 
-    void SoftwareRenderer::Render() {
+    void SBlinnPhongRenderer::Render() {
         drawer->draw(buffer);
 
 //        for (int i = 0; i < buffer.size(); i++) {
@@ -72,7 +72,7 @@ namespace EE {
         glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
     }
 
-    void SoftwareRenderer::Shutdown() {
+    void SBlinnPhongRenderer::Shutdown() {
     glDeleteVertexArrays(1, &VAO);
     glDeleteBuffers(1, &VBO);
     glDeleteProgram(shaderProgram);

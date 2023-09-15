@@ -3,7 +3,7 @@
 #include "Scene/Camera.hpp"
 #include "Utils/MeshReader.hpp"
 #include "Display/WindowManager.hpp"
-#include "Render/SoftwareRenderer.hpp"
+#include "Render/SBlinnPhongRenderer.hpp"
 #include <assimp/Importer.hpp>
 
 using namespace glm;
@@ -65,8 +65,8 @@ int main(int argc, char** argv) {
     std::string vertexPath = projectRootPath + "src/Shader/SoftVSH.glsl";
     std::string fragmentPath = projectRootPath + "src/Shader/SoftFSH.glsl";
 
-    std::unique_ptr<SoftwareRenderer> renderer;
-    renderer = std::make_unique<SoftwareRenderer>();
+    std::unique_ptr<SBlinnPhongRenderer> renderer;
+    renderer = std::make_unique<SBlinnPhongRenderer>();
     renderer->Initialize(scene, camera, windowManager, vertexPath, fragmentPath);
 
     while (!windowManager.shouldClose()) {

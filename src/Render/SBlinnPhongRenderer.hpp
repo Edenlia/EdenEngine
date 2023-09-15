@@ -2,8 +2,8 @@
 // Created by zsy01 on 2023/9/14.
 //
 
-#ifndef EDENENGINE_SOFTWARERENDERER_HPP
-#define EDENENGINE_SOFTWARERENDERER_HPP
+#ifndef EDENENGINE_SBLINNPHONGRENDERER_HPP
+#define EDENENGINE_SBLINNPHONGRENDERER_HPP
 
 #include <GL/glew.h>
 #include "Renderer.hpp"
@@ -12,7 +12,7 @@
 #include "Drawer/Drawer.hpp"
 
 namespace EE {
-    class SoftwareRenderer : public Renderer {
+    class SBlinnPhongRenderer : public Renderer {
     public:
         void Initialize(Scene* scene, Camera* camera, WindowManager& windowManager, const std::string &vertexPath, const std::string &fragmentPath) override;
         void Render() override;
@@ -25,4 +25,4 @@ namespace EE {
 
 } // EE
 
-#endif //EDENENGINE_SOFTWARERENDERER_HPP
+#endif //EDENENGINE_SBLINNPHONGRENDERER_HPP
