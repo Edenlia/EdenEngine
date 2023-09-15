@@ -98,7 +98,7 @@ namespace EE {
                                                         beta * screenTriangle->getNormal(1) / screenTriangle->getVertex(1).z +
                                                         gamma * screenTriangle->getNormal(2) / screenTriangle->getVertex(2).z);
                         if (screenTriangle->material && screenTriangle->material->getNormalMap()) {
-                            glm::vec3 N = screenTriangle->material->getNormal(fragmentUV.x, fragmentUV.y);
+                            glm::vec3 N = fragmentNormal;
                             glm::vec3 deltaPos1 = worldPos[1] - worldPos[0];
                             glm::vec3 deltaPos2 = worldPos[2] - worldPos[0];
 
@@ -113,7 +113,9 @@ namespace EE {
                             bitangent = glm::cross(N, tangent);
                             glm::mat3 TBN = glm::mat3(tangent, bitangent, N);
 
-                            fragmentNormal = TBN * N;
+                            glm::vec3 normal = screenTriangle->material->getNormal(fragmentUV.x, fragmentUV.y);
+
+                            fragmentNormal = TBN * normal;
                             fragmentNormal = glm::normalize(fragmentNormal);
                         }
 
