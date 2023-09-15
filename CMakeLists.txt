@@ -14,7 +14,6 @@ project(EdenEngine)
 
 include_directories(
         ${CMAKE_SOURCE_DIR}/src
-        ${CMAKE_SOURCE_DIR}/src/ext
 )
 
 file(GLOB SOURCE_FILE

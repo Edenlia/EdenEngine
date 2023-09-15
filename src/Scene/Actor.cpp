@@ -4,7 +4,6 @@
 
 #include "Actor.hpp"
 #include <glm/gtc/matrix_transform.hpp>
-#include <iostream>
 
 namespace EE {
     Actor::Actor(Mesh* m, glm::vec3 translate, glm::vec3 rotate, glm::vec3 scale) {

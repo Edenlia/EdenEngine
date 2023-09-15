@@ -6,8 +6,8 @@
 #define EDENENGINE_ACTOR_HPP
 
 #include "glm/glm.hpp"
-#include "Geometry/Triangle.hpp"
-#include "Geometry/Mesh.hpp"
+#include "Scene/Triangle.hpp"
+#include "Scene/Mesh.hpp"
 #include <vector>
 
 namespace EE {

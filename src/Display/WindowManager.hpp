@@ -12,21 +12,8 @@
 namespace EE {
 
     class WindowManager {
-        WindowManager(int width, int height, const char* title) {
-            if (!glfwInit()) {
-                std::cerr << "Failed to initialize GLFW" << std::endl;
-                exit(-1);
-            }
-
-            window = glfwCreateWindow(width, height, title, NULL, NULL);
-            if (!window) {
-                glfwTerminate();
-                exit(-1);
-            }
-
-            glfwMakeContextCurrent(window);
-            glewInit();
-        }
+    public:
+        WindowManager(int width, int height, const char* title) ;
 
         ~WindowManager() {
             glfwTerminate();
@@ -36,13 +23,17 @@ namespace EE {
 
         [[nodiscard]] bool shouldClose() const {return glfwWindowShouldClose(window);}
 
-        void pollEvents() const {glfwPollEvents();}
+        static void pollEvents() {glfwPollEvents();}
 
         void swapBuffers() const {glfwSwapBuffers(window);}
 
+        [[nodiscard]] int getWidth() const {return width;}
+        [[nodiscard]] int getHeight() const {return height;}
+
     private:
         GLFWwindow* window;
-
+        int width;
+        int height;
     };
 
 } // EE

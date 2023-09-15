@@ -11,9 +11,9 @@
 #include <vector>
 #include <string>
 #include <map>
-#include "Scene.hpp"
-#include "Geometry/Mesh.hpp"
-#include "Geometry/Material.hpp"
+#include "Scene/Scene.hpp"
+#include "Scene/Mesh.hpp"
+#include "Scene/Material.hpp"
 
 namespace EE {
     enum ModelFormat {
