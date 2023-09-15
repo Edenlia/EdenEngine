@@ -1,9 +1,10 @@
-#include <iostream>
 #include <GL/glew.h>
+#include <iostream>
 #include "Scene.hpp"
 #include "Camera.hpp"
-#include "Renderer.hpp"
-#include "util/ModelReader.hpp"
+#include "Render/Renderer.hpp"
+#include "Utils/MeshReader.hpp"
+#include "Utils//ShaderReader.hpp"
 #include <assimp/Importer.hpp>
 #include <GLFW/glfw3.h>
 
@@ -13,83 +14,14 @@ using namespace EE;
 const int WINDOW_WIDTH = 1600;
 const int WINDOW_HEIGHT = 800;
 
-// vertex shader
-const char* vertexShaderSrc = R"glsl(
-#version 330 core
-layout (location = 0) in vec2 aPos;
-layout (location = 1) in vec2 aTexCoord;
-
-out vec2 TexCoord;
-
-void main() {
-    gl_Position = vec4(aPos, 0.0f, 1.0f);
-    TexCoord = aTexCoord;
-}
-)glsl";
-
-// fragment shader
-const char* fragmentShaderSrc = R"glsl(
-#version 330 core
-out vec4 FragColor;
-in vec2 TexCoord;
-
-uniform sampler2D screenTexture;
-
-void main() {
-    FragColor = texture(screenTexture, TexCoord);
-}
-)glsl";
-
-
-void display() {
-    auto* scene = new Scene();
-
-    auto* modelReader = new ModelReader();
-    modelReader->readModel("../models/Stanford Bunny/", "Stanford Bunny", "dae");
-//    auto *atr1 = new Actor(modelReader->getModel("Stanford Bunny"),
-//                           glm::vec3 (1, 0, 0),
-//                           glm::vec3(0, 0, 0),
-//                           glm::vec3(7, 7, 7));
-    auto *atr2 = new Actor(modelReader->getModel("Stanford Bunny"),
-                           glm::vec3 (0, 0, 0),
-                           glm::vec3(0, 0, 0),
-                           glm::vec3(0.01, 0.01, 0.01));
-//    auto *atr3 = new Actor(modelReader->getModel("Stanford Bunny"),
-//                           glm::vec3 (-1, 0, 0),
-//                           glm::vec3(0, 0, 0),
-//                           glm::vec3(3, 3, 3));
-
-//    scene->addActor(atr1);
-    scene->addActor(atr2);
-//    scene->addActor(atr3);
-    auto* l1 = new PointLight(vec3(0, 0, 10), vec3(255, 255, 255), 100);
-
-    scene->addLight(l1);
-
-    vec3 eye(0, .9, 1.2);
-    vec3 lookAt(0, 0, -1);
-    vec3 up(0, 1, 0);
-    float fov = 90.0f;
-    float aspect = (float) WINDOW_WIDTH / (float) WINDOW_HEIGHT;
-    float zNear = 0.1f;
-    float zFar = 50.0f;
-
-    auto* camera = new Camera(eye, lookAt, up, fov, aspect, zNear, zFar);
-    camera->setWidth(WINDOW_WIDTH);
-    camera->setHeight(WINDOW_HEIGHT);
-    auto* renderer = new Renderer(scene, camera);
-    renderer->setRenderMode(RenderMode::BLINN_PHONG);
-    renderer->draw();
-
-    glClear(GL_COLOR_BUFFER_BIT);
-}
-
 int main(int argc, char** argv) {
+    const std::string projectRootPath = "../";
+
     // Create scene
     auto* scene = new Scene();
 
-    auto* modelReader = new ModelReader();
-    modelReader->readModel("../models/Stanford Bunny/", "Stanford Bunny", "dae");
+    auto* modelReader = new MeshReader();
+    modelReader->readModel(projectRootPath + "models/Stanford Bunny/", "Stanford Bunny", "dae");
 //    auto *atr1 = new Actor(modelReader->getModel("Stanford Bunny"),
 //                           glm::vec3 (1, 0, 0),
 //                           glm::vec3(0, 0, 0),
@@ -142,6 +74,17 @@ int main(int argc, char** argv) {
         std::cerr << "Failed to initialize GLEW" << std::endl;
         return -1;
     }
+
+    std::string vertexPath = projectRootPath + "src/Shaders/SoftVSH.glsl";
+    std::string fragmentPath = projectRootPath + "src/Shaders/SoftFSH.glsl";
+
+
+    std::string vertexShaderStr = ShaderReader::readShader(vertexPath.c_str());
+    std::string fragmentShaderStr = ShaderReader::readShader(fragmentPath.c_str());
+
+    const char* vertexShaderSrc = vertexShaderStr.c_str();
+    const char* fragmentShaderSrc = fragmentShaderStr.c_str();
+
 
     GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
     glShaderSource(vertexShader, 1, &vertexShaderSrc, NULL);

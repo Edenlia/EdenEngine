@@ -2,8 +2,8 @@
 // Created by zsy01 on 2023/9/11.
 //
 
-#ifndef EDENENGINE_MODEL_HPP
-#define EDENENGINE_MODEL_HPP
+#ifndef EDENENGINE_MESH_HPP
+#define EDENENGINE_MESH_HPP
 
 #include <string>
 #include <vector>
@@ -12,9 +12,9 @@
 
 namespace EE {
 
-    class Model {
+    class Mesh {
     public:
-        Model();
+        Mesh();
         void addTriangle(Triangle* triangle) { triangles.push_back(triangle); };
         [[nodiscard]] std::vector<Triangle*> getTriangles() const { return triangles; };
         [[nodiscard]] std::string getName() const { return name; };
@@ -28,4 +28,4 @@ namespace EE {
 
 } // EE
 
-#endif //EDENENGINE_MODEL_HPP
+#endif //EDENENGINE_MESH_HPP

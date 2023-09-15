@@ -2,10 +2,10 @@
 // Created by zsy01 on 2023/9/11.
 //
 
-#include "Model.hpp"
+#include "Mesh.hpp"
 
 namespace EE {
-    Model::Model() {
+    Mesh::Mesh() {
         this->triangles = std::vector<Triangle*>();
     }
 } // EE

@@ -6,15 +6,15 @@
 #define EDENENGINE_ACTOR_HPP
 
 #include "glm/glm.hpp"
-#include "Triangle.hpp"
-#include "Model.hpp"
+#include "Geometry/Triangle.hpp"
+#include "Geometry/Mesh.hpp"
 #include <vector>
 
 namespace EE {
 
     class Actor {
     public:
-        Actor(Model* m, glm::vec3 translate, glm::vec3 rotate, glm::vec3 scale);
+        Actor(Mesh* m, glm::vec3 translate, glm::vec3 rotate, glm::vec3 scale);
 
         void addTriangle(Triangle* triangle) { triangles.push_back(triangle); };
         [[nodiscard]] std::vector<Triangle*> getTriangles() const { return triangles; };
@@ -23,12 +23,12 @@ namespace EE {
         [[nodiscard]] glm::vec3 getTranslate() const { return transform[0]; };
         [[nodiscard]] glm::vec3 getRotate() const { return transform[1]; };
         [[nodiscard]] glm::vec3 getScale() const { return transform[2]; };
-        [[nodiscard]] Model* getModel() const { return model; };
+        [[nodiscard]] Mesh* getModel() const { return model; };
 
     private:
         std::vector<Triangle*> triangles;
         glm::vec3 transform[3];
-        Model* model;
+        Mesh* model;
     };
 
 } // EE

@@ -2,14 +2,14 @@
 // Created by zsy01 on 2023/9/11.
 //
 
-#include "ModelReader.hpp"
+#include "MeshReader.hpp"
 #include <iostream>
 #include <glm/glm.hpp>
 #define STB_IMAGE_IMPLEMENTATION
 #include "ext/stb/stb_image.h"
 
 namespace EE {
-    void ModelReader::readModel(const std::string &dirPath, const std::string& name, const std::string &extension) {
+    void MeshReader::readModel(const std::string &dirPath, const std::string& name, const std::string &extension) {
         Assimp::Importer importer;
 
         std::string modelPath = dirPath + name + '.' + extension;
@@ -37,7 +37,7 @@ namespace EE {
             Material *m = materials[materialName];
 
             assert(aMesh->HasNormals());
-            auto* model = new Model();
+            auto* model = new Mesh();
             for (int j = 0; j < aMesh->mNumFaces; j++) {
                 aiFace face = aMesh->mFaces[j];
                 auto *triangle = new Triangle();
@@ -69,7 +69,7 @@ namespace EE {
         }
     }
 
-    void ModelReader::readMaterial(const std::string &dirPath, const std::string &modelName, const std::string &materialIndexName) {
+    void MeshReader::readMaterial(const std::string &dirPath, const std::string &modelName, const std::string &materialIndexName) {
         auto* newMaterial = new Material();
 
         newMaterial->setName(modelName + "_" + materialIndexName);

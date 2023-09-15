@@ -7,7 +7,7 @@
 
 #include "Scene.hpp"
 #include "Camera.hpp"
-#include "Material.hpp"
+#include "Geometry/Material.hpp"
 #include <iostream>
 
 

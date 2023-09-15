@@ -7,7 +7,7 @@
 #include <iostream>
 
 namespace EE {
-    Actor::Actor(Model* m, glm::vec3 translate, glm::vec3 rotate, glm::vec3 scale) {
+    Actor::Actor(Mesh* m, glm::vec3 translate, glm::vec3 rotate, glm::vec3 scale) {
         this->model = m;
         this->transform[0] = translate;
         this->transform[1] = rotate;

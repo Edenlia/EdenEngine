@@ -21,12 +21,12 @@ file(GLOB SOURCE_FILE
         ${CMAKE_SOURCE_DIR}/src/*.h
         ${CMAKE_SOURCE_DIR}/src/*.hpp
         ${CMAKE_SOURCE_DIR}/src/*.cpp
-        ${CMAKE_SOURCE_DIR}/src/util/*.h
-        ${CMAKE_SOURCE_DIR}/src/util/*.hpp
-        ${CMAKE_SOURCE_DIR}/src/util/*.cpp
-        ${CMAKE_SOURCE_DIR}/src/ext/*/*.h
-        ${CMAKE_SOURCE_DIR}/src/ext/*/*.hpp
-        ${CMAKE_SOURCE_DIR}/src/ext/*/*.cpp
+        ${CMAKE_SOURCE_DIR}/src/*/*.h
+        ${CMAKE_SOURCE_DIR}/src/*/*.hpp
+        ${CMAKE_SOURCE_DIR}/src/*/*.cpp
+        ${CMAKE_SOURCE_DIR}/src/*/*/*.h
+        ${CMAKE_SOURCE_DIR}/src/*/*/*.hpp
+        ${CMAKE_SOURCE_DIR}/src/*/*/*.cpp
 )
 
 # Sort the file into different folders

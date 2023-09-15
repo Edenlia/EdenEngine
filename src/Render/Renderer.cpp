@@ -3,7 +3,7 @@
 //
 
 #include "Renderer.hpp"
-#include "util/EEMath.hpp"
+#include "Utils/EEMath.hpp"
 #include <limits>
 #include <array>
 
