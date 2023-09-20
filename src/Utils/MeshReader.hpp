@@ -13,7 +13,7 @@
 #include <map>
 #include "Scene/Scene.hpp"
 #include "Scene/Mesh.hpp"
-#include "Scene/Material.hpp"
+#include "Material/Material.hpp"
 
 namespace EE {
     enum ModelFormat {

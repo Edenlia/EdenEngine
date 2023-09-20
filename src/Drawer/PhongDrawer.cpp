@@ -3,11 +3,11 @@
 //
 
 #include <iostream>
-#include "BlinnPhongDrawer.hpp"
+#include "PhongDrawer.hpp"
 #include "Utils/EEMath.hpp"
 
 namespace EE {
-    BlinnPhongDrawer::BlinnPhongDrawer(int width, int height, int channel, Scene *scene, Camera *camera) : Drawer(width, height, channel) {
+    PhongDrawer::PhongDrawer(int width, int height, int channel, Scene *scene, Camera *camera) : Drawer(width, height, channel) {
         this->scene = scene;
         this->camera = camera;
 
@@ -20,7 +20,7 @@ namespace EE {
         }
     }
 
-    void BlinnPhongDrawer::draw(std::vector<unsigned char> &buffer) {
+    void PhongDrawer::draw(std::vector<unsigned char> &buffer) {
         if (buffer.size() != width * height * channel) {
             std::cerr << "draw buffer size not match!" << std::endl;
             exit(-1);
@@ -29,11 +29,11 @@ namespace EE {
         float nearPlane = camera->getNearPlane();
         float farPlane = camera->getFarPlane();
         for (auto &actor : scene->getActors()) {
-            for (auto &triangle : actor->getModel()->getTriangles()) {
+            for (auto* triangle : actor->getMesh()->getTriangles()) {
                 auto* screenTriangle = new Triangle();
                 glm::vec3 worldPos[3];
                 for (int i = 0; i < 3; i++) {
-                    // model, view transform
+                    // mesh, view transform
                     glm::vec4 vertex = actor->getModelMatrix() * triangle->getVertex(i);
                     vertex = viewMatrix * vertex;
 
@@ -59,7 +59,7 @@ namespace EE {
         }
     }
 
-    void BlinnPhongDrawer::drawTriangle(Triangle *screenTriangle, glm::vec3 *worldPos, std::vector<unsigned char> &buffer) {
+    void PhongDrawer::drawTriangle(Triangle *screenTriangle, glm::vec3 *worldPos, std::vector<unsigned char> &buffer) {
         glm::vec4 v0 = screenTriangle->getVertex(0);
         glm::vec4 v1 = screenTriangle->getVertex(1);
         glm::vec4 v2 = screenTriangle->getVertex(2);
@@ -103,28 +103,27 @@ namespace EE {
                         glm::vec3 fragmentNormal = z * (alpha * screenTriangle->getNormal(0) / screenTriangle->getVertex(0).z +
                                                         beta * screenTriangle->getNormal(1) / screenTriangle->getVertex(1).z +
                                                         gamma * screenTriangle->getNormal(2) / screenTriangle->getVertex(2).z);
-                        if (screenTriangle->material && screenTriangle->material->getNormalMap()) {
-                            glm::vec3 N = fragmentNormal;
-                            glm::vec3 deltaPos1 = worldPos[1] - worldPos[0];
-                            glm::vec3 deltaPos2 = worldPos[2] - worldPos[0];
-
-                            glm::vec2 deltaUV1 = screenTriangle->getUV(1) - screenTriangle->getUV(0);
-                            glm::vec2 deltaUV2 = screenTriangle->getUV(2) - screenTriangle->getUV(0);
-
-                            float r = 1.0f / (deltaUV1.x * deltaUV2.y - deltaUV1.y * deltaUV2.x);
-                            glm::vec3 tangent = (deltaPos1 * deltaUV2.y - deltaPos2 * deltaUV1.y) * r;
-                            glm::vec3 bitangent = (deltaPos2 * deltaUV1.x - deltaPos1 * deltaUV2.x) * r;
-
-                            tangent = glm::normalize(tangent - glm::dot(tangent, N) * N);
-                            bitangent = glm::cross(N, tangent);
-                            glm::mat3 TBN = glm::mat3(tangent, bitangent, N);
-
-                            glm::vec3 normal = screenTriangle->material->getNormal(fragmentUV.x, fragmentUV.y);
-
-                            fragmentNormal = TBN * normal;
-                            fragmentNormal = glm::normalize(fragmentNormal);
-                        }
-
+//                        if (screenTriangle->material && screenTriangle->material->getNormalMap()) {
+//                            glm::vec3 N = fragmentNormal;
+//                            glm::vec3 deltaPos1 = worldPos[1] - worldPos[0];
+//                            glm::vec3 deltaPos2 = worldPos[2] - worldPos[0];
+//
+//                            glm::vec2 deltaUV1 = screenTriangle->getUV(1) - screenTriangle->getUV(0);
+//                            glm::vec2 deltaUV2 = screenTriangle->getUV(2) - screenTriangle->getUV(0);
+//
+//                            float r = 1.0f / (deltaUV1.x * deltaUV2.y - deltaUV1.y * deltaUV2.x);
+//                            glm::vec3 tangent = (deltaPos1 * deltaUV2.y - deltaPos2 * deltaUV1.y) * r;
+//                            glm::vec3 bitangent = (deltaPos2 * deltaUV1.x - deltaPos1 * deltaUV2.x) * r;
+//
+//                            tangent = glm::normalize(tangent - glm::dot(tangent, N) * N);
+//                            bitangent = glm::cross(N, tangent);
+//                            glm::mat3 TBN = glm::mat3(tangent, bitangent, N);
+//
+//                            glm::vec3 normal = screenTriangle->material->getNormal(fragmentUV.x, fragmentUV.y);
+//
+//                            fragmentNormal = TBN * normal;
+//                            fragmentNormal = glm::normalize(fragmentNormal);
+//                        }
 
                         glm::vec3 fragmentPosition = z * (alpha * worldPos[0] / screenTriangle->getVertex(0).z +
                                                           beta * worldPos[1] / screenTriangle->getVertex(1).z +
@@ -143,14 +142,14 @@ namespace EE {
                         buffer[getIndex(x, camera->getHeight() - 1 - y) * channel] = color.x * 255;
                         buffer[getIndex(x, camera->getHeight() - 1 - y) * channel + 1] = color.y * 255;
                         buffer[getIndex(x, camera->getHeight() - 1 - y) * channel + 2] = color.z * 255;
-
+//                        std::cout << "color: " << color.x << " " << color.y << " " << color.z << std::endl;
                     }
                 }
             }
         }
     }
 
-    bool BlinnPhongDrawer::insideTriangle(const glm::vec3 &p, const glm::vec3 &a, const glm::vec3 &b, const glm::vec3 &c) {
+    bool PhongDrawer::insideTriangle(const glm::vec3 &p, const glm::vec3 &a, const glm::vec3 &b, const glm::vec3 &c) {
         glm::vec2 ab = glm::vec2(b.x - a.x, b.y - a.y);
         glm::vec2 bc = glm::vec2(c.x - b.x, c.y - b.y);
         glm::vec2 ca = glm::vec2(a.x - c.x, a.y - c.y);
@@ -166,7 +165,7 @@ namespace EE {
         return (c1 >= 0 && c2 >= 0 && c3 >= 0) || (c1 <= 0 && c2 <= 0 && c3 <= 0);
     }
 
-    glm::vec3 BlinnPhongDrawer::drawColor(const BlinnPhongDrawer::fragmentPayload &payload) {
+    glm::vec3 PhongDrawer::drawColor(const PhongDrawer::fragmentPayload &payload) {
         glm::vec3 color = glm::vec3(0, 0, 0);
         switch (drawMode) {
             case RASTERIZATION:
@@ -198,8 +197,8 @@ namespace EE {
 
                 for (auto* light : scene->getLights()) {
                     glm::vec3 I = light->getColor() * light->getIntensity() / 255.0f;
-                    float r2 = glm::dot(light->getPosition() - payload.worldPos, light->getPosition() - payload.worldPos);
-                    glm::vec3 wi = glm::normalize(light->getPosition() - payload.worldPos);
+                    float r2 = glm::dot(light->getTranslate() - payload.worldPos, light->getTranslate() - payload.worldPos);
+                    glm::vec3 wi = glm::normalize(light->getTranslate() - payload.worldPos);
                     glm::vec3 n = glm::normalize(payload.normal);
                     glm::vec3 wo = glm::normalize(camera->getPosition() - payload.worldPos);
                     glm::vec3 h = glm::normalize(wi + wo);

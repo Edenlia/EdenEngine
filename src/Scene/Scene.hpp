@@ -20,7 +20,6 @@ namespace EE {
         [[nodiscard]] std::vector<EE::Actor*> getActors() const { return actors; };
         void addLight(EE::Light* newLight) { lights.push_back(newLight); };
         [[nodiscard]] std::vector<EE::Light*> getLights() const { return lights; };
-
     private:
         std::vector<EE::Actor*> actors;
         std::vector<EE::Light*> lights;
