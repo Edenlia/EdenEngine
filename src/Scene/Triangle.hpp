@@ -6,7 +6,7 @@
 #define EDENENGINE_TRIANGLE_HPP
 
 #include "glm/glm.hpp"
-#include "Scene/Material.hpp"
+#include "Material/Material.hpp"
 #include <array>
 
 namespace EE {

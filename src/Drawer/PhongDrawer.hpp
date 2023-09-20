@@ -2,19 +2,19 @@
 // Created by zsy01 on 2023/9/14.
 //
 
-#ifndef EDENENGINE_BLINNPHONGDRAWER_HPP
-#define EDENENGINE_BLINNPHONGDRAWER_HPP
+#ifndef EDENENGINE_PHONGDRAWER_HPP
+#define EDENENGINE_PHONGDRAWER_HPP
 
 #include <glm/vec2.hpp>
 #include "Drawer.hpp"
-#include "Scene/Material.hpp"
+#include "Material/Material.hpp"
 #include "Scene/Triangle.hpp"
 #include "Scene/Scene.hpp"
 #include "Scene/Camera.hpp"
 
 namespace EE {
 
-    class BlinnPhongDrawer : public Drawer {
+    class PhongDrawer : public Drawer {
     public:
         enum DrawMode {
             NORMAL,
@@ -32,7 +32,7 @@ namespace EE {
             Material* material;
         };
 
-        BlinnPhongDrawer(int width, int height, int channel, Scene *scene, Camera *camera);
+        PhongDrawer(int width, int height, int channel, Scene *scene, Camera *camera);
 
         void draw(std::vector<unsigned char>& buffer) override;
         void drawTriangle(Triangle* screenTriangle, glm::vec3 worldPos[3], std::vector<unsigned char>& buffer);
@@ -50,9 +50,9 @@ namespace EE {
         glm::mat4 projectionMatrix = glm::mat4(1.f);
         std::vector<float> depthBuffer; // depth buffer stores linear depth from 0 to 1
 
-        DrawMode drawMode = DrawMode::NORMAL;
+        DrawMode drawMode = DrawMode::BLINN_PHONG;
     };
 
 } // EE
 
-#endif //EDENENGINE_BLINNPHONGDRAWER_HPP
+#endif //EDENENGINE_PHONGDRAWER_HPP

@@ -36,35 +36,53 @@ namespace EE {
             Material *m = materials[materialName];
 
             assert(aMesh->HasNormals());
-            auto* model = new Mesh();
+            auto* mesh = new Mesh();
+
+            std::vector<float> vertices(aMesh->mNumVertices * 3);
+            std::vector<float> normals(aMesh->mNumVertices * 3);
+            std::vector<float> uvs(aMesh->mNumVertices * 2);
+            std::vector<unsigned int> indices(aMesh->mNumFaces * 3);
+
+            std::cout << "vertices num: " << aMesh->mNumVertices << std::endl;
+            std::cout << "faces num: " << aMesh->mNumFaces << std::endl;
+
+//            std::cout << "first triangle: " << aMesh->mVertices[aMesh->mFaces[0].mIndices[0]].x << " " << aMesh->mVertices[aMesh->mFaces[0].mIndices[0]].y << " " << aMesh->mVertices[aMesh->mFaces[0].mIndices[0]].z << std::endl;
+
+            for (int j = 0; j < aMesh->mNumVertices; j++) {
+                aiVector3D vertex = aMesh->mVertices[j];
+                vertices[j * 3] = vertex.x;
+                vertices[j * 3 + 1] = vertex.y;
+                vertices[j * 3 + 2] = vertex.z;
+
+                aiVector3D normal = aMesh->mNormals[j];
+                normals[j * 3] = normal.x;
+                normals[j * 3 + 1] = normal.y;
+                normals[j * 3 + 2] = normal.z;
+
+                aiVector3D uv = aMesh->mTextureCoords[0][j];
+                uvs[j * 2] = uv.x;
+                uvs[j * 2 + 1] = uv.y;
+            }
+
             for (int j = 0; j < aMesh->mNumFaces; j++) {
                 aiFace face = aMesh->mFaces[j];
-                auto *triangle = new Triangle();
-
-                assert(face.mNumIndices == 3);
-                for (int k = 0; k < face.mNumIndices; k++) {
-                    int index = face.mIndices[k];
-                    aiVector3D vertex = aMesh->mVertices[index];
-                    aiColor4D color;
-                    if (!aMesh->HasVertexColors(0)) {
-                        color = aiColor4D(defaultColor.x, defaultColor.y, defaultColor.z, 1.0f);
-                    } else {
-                        color = aMesh->mColors[0][index];
-                    }
-                    aiVector3D genNormal = aMesh->mNormals[index];
-//                std::cout << "genNormal: " << genNormal.x << " " << genNormal.y << " " << genNormal.z << std::endl;
-
-                    triangle->setVertex(k, glm::vec3(vertex.x, vertex.y, vertex.z));
-                    triangle->setColor(k, glm::vec3(color.r, color.g, color.b));
-                    triangle->setNormal(k, glm::vec3(genNormal.x, genNormal.y, genNormal.z));
-                    aiVector3D uv = aMesh->mTextureCoords[0][index];
-                    triangle->setUV(k, glm::vec2(uv.x, uv.y));
-//                    std::cout << "uv: " << uv.x << " " << uv.y << std::endl;
-                    triangle->setMaterial(m);
-                }
-                model->addTriangle(triangle);
+                indices[j * 3] = face.mIndices[0];
+                indices[j * 3 + 1] = face.mIndices[1];
+                indices[j * 3 + 2] = face.mIndices[2];
             }
-            models[name] = model;
+
+            mesh->setVertices(vertices);
+            mesh->setNormals(normals);
+            mesh->setUVs(uvs);
+            mesh->setIndices(indices);
+
+            mesh->setVerticesNum(aMesh->mNumVertices * 3);
+            mesh->setIndicesNum(aMesh->mNumFaces * 3);
+
+            mesh->setMaterial(m);
+
+
+            models[name] = mesh;
         }
     }
 

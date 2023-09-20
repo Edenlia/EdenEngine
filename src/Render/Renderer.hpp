@@ -8,7 +8,7 @@
 #include <GL/glew.h>
 #include "Scene/Scene.hpp"
 #include "Scene/Camera.hpp"
-#include "Scene/Material.hpp"
+#include "Material/Material.hpp"
 #include "Display/WindowManager.hpp"
 #include <iostream>
 
@@ -27,7 +27,6 @@ namespace EE {
         WindowManager* windowManager;
         Scene* scene;
         Camera* camera;
-        std::vector<unsigned char> buffer;
     };
 
 } // EE

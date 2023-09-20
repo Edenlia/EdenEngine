@@ -25,6 +25,13 @@ namespace EE {
         void setWidth(int w) { this->width = w; };
         void setHeight(int h) { this->height = h; };
         [[nodiscard]] glm::vec3 getPosition() const { return position; };
+        [[nodiscard]] glm::vec3 getLookAt() const { return lookAt; };
+        [[nodiscard]] glm::vec3 getUp() const { return up; };
+        [[nodiscard]] float getMoveSpeed() const { return moveSpeed; };
+        void setPosition(glm::vec3 pos) { this->position = pos; };
+        void setDeltaTime(float dt) { this->deltaTime = dt; };
+        [[nodiscard]] float getDeltaTime() const { return deltaTime; };
+
 
     private:
         glm::vec3 position;
@@ -37,6 +44,8 @@ namespace EE {
         float zFar;
         int width;
         int height;
+        float moveSpeed = 10;
+        float deltaTime = 0.0f;
 
     };
 

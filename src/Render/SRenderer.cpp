@@ -2,16 +2,16 @@
 // Created by zsy01 on 2023/9/14.
 //
 
-#include "SBlinnPhongRenderer.hpp"
-#include "Drawer/BlinnPhongDrawer.hpp"
+#include "SRenderer.hpp"
+#include "Drawer/PhongDrawer.hpp"
 
 namespace EE {
-    void SBlinnPhongRenderer::Initialize(Scene* scene, Camera* camera, WindowManager& windowManager, const std::string &vertexPath, const std::string &fragmentPath) {
+    void SRenderer::Initialize(Scene* scene, Camera* camera, WindowManager& windowManager, const std::string &vertexPath, const std::string &fragmentPath) {
         {
             this->windowManager = &windowManager;
             this->scene = scene;
             this->camera = camera;
-            drawer = new BlinnPhongDrawer(windowManager.getWidth(), windowManager.getHeight(), 3, scene, camera);
+            drawer = new PhongDrawer(windowManager.getWidth(), windowManager.getHeight(), 3, scene, camera);
             buffer = std::vector<unsigned char>(windowManager.getWidth() * windowManager.getHeight() * 3, 0);
 
             // Load shaders
@@ -55,8 +55,10 @@ namespace EE {
         }
     }
 
-    void SBlinnPhongRenderer::Render() {
+    void SRenderer::Render() {
+//        std::cout << 1 << std::endl;
         drawer->draw(buffer);
+
 
 //        for (int i = 0; i < buffer.size(); i++) {
 //            if (buffer[i] != 0.f) {
@@ -72,10 +74,16 @@ namespace EE {
         glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
     }
 
-    void SBlinnPhongRenderer::Shutdown() {
+    void SRenderer::Shutdown() {
     glDeleteVertexArrays(1, &VAO);
     glDeleteBuffers(1, &VBO);
     glDeleteProgram(shaderProgram);
     }
+
+    void SRenderer::debug() {
+        std::cout << "SRenderer" << std::endl;
+
+    }
+
 
 } // EE
