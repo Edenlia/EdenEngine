@@ -4,36 +4,44 @@ set(CMAKE_CXX_STANDARD 23)
 
 project(EdenEngine)
 
-# Enable Objective-C++ language
-enable_language(OBJCXX)
-
-# Add Cocoa framework for macOS
+# Platform specific configurations
 if(APPLE)
+    # Enable Objective-C++ language for macOS
+    enable_language(OBJCXX)
     find_library(COCOA_FRAMEWORK Cocoa)
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -framework Cocoa")
-    # Enable Objective-C++ compilation
+    
+    # Set source files for macOS
+    set(PLATFORM_SOURCES
+        Source/Runtime/Core/Display/MacDisplay.cpp
+    )
+    
+    # Enable Objective-C++ compilation for macOS files
     set_source_files_properties(
-        Source/Runtime/main.cpp
+        Source/Runtime/Main.cpp
         Source/Runtime/Core/Display/MacDisplay.cpp
         PROPERTIES LANGUAGE OBJCXX
+    )
+    
+    # Link Cocoa framework
+    target_link_libraries(EdenEngine PRIVATE ${COCOA_FRAMEWORK})
+elseif(WIN32)
+    # Set source files for Windows
+    set(PLATFORM_SOURCES
+        Source/Runtime/Core/Display/WindowsDisplay.cpp
     )
 endif()
 
 # Include source files
 add_executable(EdenEngine 
-    Source/Runtime/main.cpp
-    Source/Runtime/Core/Display/MacDisplay.cpp
+    Source/Runtime/Main.cpp
+    ${PLATFORM_SOURCES}
 )
 
 # Include directories
 target_include_directories(EdenEngine PRIVATE
     ${CMAKE_SOURCE_DIR}/Source/Runtime
 )
-
-# Link Cocoa framework on macOS
-if(APPLE)
-    target_link_libraries(EdenEngine PRIVATE ${COCOA_FRAMEWORK})
-endif()
 
 # Commented out all other configurations
 # if(NOT $ENV{VCPKG_ROOT} STREQUAL "")

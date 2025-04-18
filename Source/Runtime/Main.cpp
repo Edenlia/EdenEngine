@@ -1,6 +1,11 @@
+#if defined(__APPLE__)
 #include <Cocoa/Cocoa.h>
 #include "Core/Display/MacDisplay.h"
+#elif defined(_WIN32)
+#include "Core/Display/WindowsDisplay.h"
+#endif
 
+#if defined(__APPLE__)
 @interface AppDelegate : NSObject {
     NSWindow* window;
 }
@@ -31,6 +36,7 @@
 }
 
 @end
+#endif
 
 int main(int argc, const char* argv[]) {
 #if defined(__APPLE__)
@@ -38,7 +44,9 @@ int main(int argc, const char* argv[]) {
     display.Initialize();
     display.Run();
 #elif defined(_WIN32)
-    // Windows implementation will be added later
+    WindowsDisplay display;
+    display.Initialize();
+    display.Run();
 #endif
     
     return 0;
