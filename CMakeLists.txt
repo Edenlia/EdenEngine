@@ -4,6 +4,9 @@ set(CMAKE_CXX_STANDARD 23)
 
 project(EdenEngine)
 
+# Add glm as a subdirectory
+add_subdirectory(Source/ThirdParty/glm)
+
 # Platform specific configurations
 if(APPLE)
     # Enable Objective-C++ language for macOS
@@ -41,7 +44,11 @@ add_executable(EdenEngine
 # Include directories
 target_include_directories(EdenEngine PRIVATE
     ${CMAKE_SOURCE_DIR}/Source/Runtime
+    ${CMAKE_SOURCE_DIR}/Source/ThirdParty/glm
 )
+
+# Link glm
+target_link_libraries(EdenEngine PRIVATE glm::glm-header-only)
 
 # Commented out all other configurations
 # if(NOT $ENV{VCPKG_ROOT} STREQUAL "")

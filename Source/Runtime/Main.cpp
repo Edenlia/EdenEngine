@@ -5,6 +5,8 @@
 #include "Core/Display/WindowsDisplay.h"
 #endif
 
+#include "glm.hpp"
+
 #if defined(__APPLE__)
 @interface AppDelegate : NSObject {
     NSWindow* window;
@@ -48,6 +50,7 @@ int main(int argc, const char* argv[]) {
     display.Initialize();
     display.Run();
 #endif
-    
+
+
     return 0;
 } 
