@@ -6,6 +6,8 @@
 #endif
 
 #include "glm.hpp"
+#include <vulkan/vulkan.h>
+#include <iostream>
 
 #if defined(__APPLE__)
 @interface AppDelegate : NSObject {

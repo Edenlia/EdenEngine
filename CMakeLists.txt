@@ -33,7 +33,15 @@ elseif(WIN32)
     set(PLATFORM_SOURCES
         Source/Runtime/Core/Display/WindowsDisplay.cpp
     )
+
+    # Windows find Vulkan
+    set(Vulkan_INCLUDE_DIR $ENV{VULKAN_SDK}/Include)
+    set(Vulkan_LIBRARY $ENV{VULKAN_SDK}/Lib/vulkan-1.lib)
+
+    message(STATUS "Vulkan include: ${Vulkan_INCLUDE_DIR}")
+    message(STATUS "Vulkan lib: ${Vulkan_LIBRARY}")
 endif()
+
 
 # Include source files
 add_executable(EdenEngine 
@@ -45,10 +53,13 @@ add_executable(EdenEngine
 target_include_directories(EdenEngine PRIVATE
     ${CMAKE_SOURCE_DIR}/Source/Runtime
     ${CMAKE_SOURCE_DIR}/Source/ThirdParty/glm
+    ${Vulkan_INCLUDE_DIR}
 )
 
-# Link glm
-target_link_libraries(EdenEngine PRIVATE glm::glm-header-only)
+# Link glm and Vulkan libraries
+target_link_libraries(EdenEngine PRIVATE
+        glm::glm-header-only
+        ${Vulkan_LIBRARY})
 
 # Commented out all other configurations
 # if(NOT $ENV{VCPKG_ROOT} STREQUAL "")
