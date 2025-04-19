@@ -16,7 +16,8 @@ if(APPLE)
     find_library(COCOA_FRAMEWORK Cocoa)
     find_library(METAL_FRAMEWORK Metal)
     find_library(METALKIT_FRAMEWORK MetalKit)
-    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -framework Cocoa -framework Metal -framework MetalKit")
+    find_library(QUARTZ_CORE_FRAMEWORK QuartzCore)
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -framework Cocoa -framework Metal -framework MetalKit -framework QuartzCore")
     
     # Set source files for macOS
     set(PLATFORM_SOURCES
@@ -49,6 +50,7 @@ if (APPLE)
         ${COCOA_FRAMEWORK}
         ${METAL_FRAMEWORK}
         ${METALKIT_FRAMEWORK}
+        ${QUARTZ_CORE_FRAMEWORK}
     )
 endif()
 
